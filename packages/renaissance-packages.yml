@@ -1,0 +1,33 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  npm registry search (registry.npmjs.org/-/v1/search), pypi.org/pypi/renaissance/json,
+  https://www.renaissance.com/llms.txt, https://support.renaissance.com/s/ and the three OpenAPI
+  contracts in openapi/
+package_count: 0
+packages: []
+note: >-
+  No first-party Renaissance Learning client library exists on any public registry. npm search for
+  "renaissance learning" returns only unrelated packages (the closest name match,
+  @renaissancerentals/renaissance-component, is a rental-property UI library from an unrelated
+  publisher). PyPI has no `renaissance` project (404). No SDK, CLI or SourceCode link appears in
+  apis.yml, in llms.txt, or in any of the three published contracts. This is consistent with the
+  distribution model: Renaissance's integration surface reaches districts through 1EdTech OneRoster
+  and LTI certified connections and through SIS vendors (Clever, ClassLink, Infinite Campus, Aeries),
+  not through developer-installed client libraries.
+github:
+  primary_org: https://github.com/RenaissancePlace
+  secondary_org: https://github.com/renaissance-learning
+  public_repositories: 0
+  detail: >-
+    RenaissancePlace is the company's primary GitHub organization (website renaissance.com) and has
+    NO public repositories. The renaissance-learning org carries a single .github repo whose profile
+    reads "Owned by renaissance.com. See RenaissancePlace for our primary GitHub organization." There
+    is no published SDK, sample client or .proto anywhere in either org.
+registries_checked:
+  - registry: npm
+    query: renaissance learning
+    result: no first-party package
+  - registry: pypi
+    query: renaissance
+    result: 404

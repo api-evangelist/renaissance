@@ -1,0 +1,80 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  https://status.renaissance.com/ (+ its public Statuspage API), https://www.renaissance.com/product-updates/,
+  and the three OpenAPI contracts in openapi/
+versioning:
+  scheme: path-prefix
+  detail: >-
+    The Student Proficiency Service prefixes most operations with /v1 (/v1/skill, /v1/skill-groups,
+    /v1/skill-groups/by-class, /v1/pathway/next-activity/{student_rgp_id}, /v1/classes/{class_id}/students,
+    /v1/skills/validate) but leaves two operations unversioned (/reading-level/{student_id}, /health).
+    The Event Proxy and the Lexile API carry no version segment at all. info.version is 1.0.0 on all three.
+  current_version: '1.0.0'
+  header_versioning: false
+  ed_fi_product_version: >-
+    DnA version 14.2 and above is the range covered by the current Ed-Fi Assessment Outcomes API credential.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  detail: >-
+    No deprecation or sunset policy is published on any Renaissance surface reachable without a
+    customer login, and no operation in any contract carries `deprecated: true`.
+status_page:
+  url: https://status.renaissance.com/
+  name: Renaissance Learning Status
+  platform: Atlassian Statuspage
+  http_status: 200
+  api:
+    summary: https://status.renaissance.com/api/v2/summary.json
+    status: https://status.renaissance.com/api/v2/status.json
+    components: https://status.renaissance.com/api/v2/components.json
+    http_status: 200
+    note: >-
+      Machine-readable and anonymous, but the contract is Atlassian's generic Statuspage API, not a
+      Renaissance-authored one. No OpenAPI is saved for it and it is not registered as a Renaissance
+      contract — only as the runtime signal an agent can poll.
+  components_tracked: 22
+  components:
+    - Accelerated Reader
+    - DnA
+    - eduCLIMBER
+    - eSchoolData
+    - FastBridge
+    - Flocabulary
+    - Freckle
+    - Lalilo
+    - myIGDIs
+    - myON
+    - Nearpod
+    - Phone System
+    - Renaissance Fundamentals
+    - Renaissance Growth Platform (RGP)
+    - Renaissance Intelligence
+    - Renaissance Next for Teachers
+    - SchoolCity
+    - Star Assessments
+    - Star Phonics
+    - Star Preschool
+    - Support Cases / Emails
+    - Support Tools
+  feeds:
+    rss: https://status.renaissance.com/history.rss
+    atom: https://status.renaissance.com/history.atom
+  observed: '2026-09-13'
+sla:
+  published: false
+  detail: No public uptime commitment; SLAs are contractual and reach districts through procurement, not the web.
+change_log:
+  url: https://www.renaissance.com/product-updates/
+  cadence: irregular, product-by-product
+  detail: >-
+    Dated product-update posts covering feature releases across Star, Lalilo, SchoolCity, Accelerated
+    Reader and the rest of the portfolio. It is a product release note stream, not an API changelog —
+    none of the three API contracts has a published change history.
+support:
+  url: https://support.renaissance.com/s/
+  detail: Salesforce Experience Cloud community; article bodies render client-side and are not machine-readable.

@@ -1,0 +1,34 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Renaissance Lexile API
+  version: 1.0.0
+extends: ../openapi/renaissance-lexile-api-openapi.yml
+x-generated: '2026-09-13'
+x-method: generated
+x-source: >-
+  Derived from a probe of https://api.proxile.renaissance.com/openapi.json and a live anonymous call
+  to /api/lexile/{isbn13}, which returned 401.
+actions:
+  - target: $.info
+    update:
+      contact:
+        name: Renaissance Learning, Inc.
+        url: https://www.renaissance.com/about-us/contact-renaissance/
+  - target: $
+    update:
+      servers:
+        - url: https://api.proxile.renaissance.com
+          description: >-
+            Production host the contract is served from. The original document ships an EMPTY
+            servers[] array, so nothing in it tells a generated client where to send the request.
+  - target: $.paths['/api/lexile/{isbn13}'].get
+    update:
+      operationId: getLexileByIsbn13
+      x-api-evangelist-note: >-
+        The operation declares no operationId, which leaves generated clients and any MCP tool
+        binding without a stable name. `getLexileByIsbn13` is OUR name for it, not the provider's.
+      x-required-scope: ren.lexile.read
+      x-probe:
+        url: https://api.proxile.renaissance.com/api/lexile/9780439064873
+        status: 401
+        checked: '2026-09-13'

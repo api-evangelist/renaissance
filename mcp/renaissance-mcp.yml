@@ -1,0 +1,84 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  openapi/renaissance-student-proficiency-service-openapi.yml,
+  openapi/renaissance-student-pathway-event-proxy-openapi.yml,
+  openapi/renaissance-lexile-api-openapi.yml
+status: candidate
+deployment:
+  mode: none
+  auth: oauth
+  verified: derived
+  note: >-
+    Renaissance ships no MCP server. No hosted endpoint, no npx/pip package, and no mention of MCP on
+    renaissance.com, in llms.txt, on the support community or in any contract. The tools below are a
+    CANDIDATE surface derived from real published operations so the shape is on record — nobody can
+    call them today. If Renaissance ever ships a server, auth would be `oauth` because the whole
+    contract set is bearer-JWT from auth.renaissance.com.
+tools:
+  - name: predict_student_skill_proficiency
+    description: Predict proficiency for one or more students on one or more math skills.
+    rest: predict_proficiency_v1_skill_post
+    api: Student Proficiency Service
+    input_schema_source: SingleSkillInferenceRequest (student_rgp_ids, rl_skill_ids)
+    read_only: true
+  - name: predict_skill_group_proficiency
+    description: Predict proficiency for a group of skills across students.
+    rest: predict_group_proficiency_v1_skill_groups_post
+    api: Student Proficiency Service
+    input_schema_source: GroupSkillInferenceRequest (student_rgp_ids, rl_skill_ids)
+    read_only: true
+  - name: predict_class_proficiency
+    description: Predict proficiency for every student in a class across a set of skills.
+    rest: predict_group_proficiency_by_class_v1_skill_groups_by_class_post
+    api: Student Proficiency Service
+    input_schema_source: ByClassInferenceRequest (class_id, rl_skill_ids)
+    read_only: true
+  - name: get_next_activity
+    description: Get the next recommended pathway activity for a student, with its app launch deep link.
+    rest: get_next_activity_v1_pathway_next_activity__student_rgp_id__get
+    api: Student Proficiency Service
+    input_schema_source: path parameter student_rgp_id
+    read_only: true
+  - name: get_student_reading_level
+    description: Get a student's current reading level — ZPD range, Lexile measure and assessment timestamp.
+    rest: get_reading_level_endpoint_reading_level__student_id__get
+    api: Student Proficiency Service
+    input_schema_source: path parameter student_id
+    read_only: true
+    pii: true
+  - name: list_class_students
+    description: List the students in a class.
+    rest: get_class_students_v1_classes__class_id__students_get
+    api: Student Proficiency Service
+    input_schema_source: path parameter class_id
+    read_only: true
+    pii: true
+  - name: validate_skill_ids
+    description: Check which of a set of skill IDs the proficiency models support.
+    rest: validate_skill_ids_v1_skills_validate_post
+    api: Student Proficiency Service
+    input_schema_source: SkillValidationRequest
+    read_only: true
+  - name: get_lexile_by_isbn
+    description: Look up the Lexile record for a book by ISBN-13.
+    rest: GET /api/lexile/{isbn13}
+    api: Lexile API
+    input_schema_source: path parameter isbn13
+    read_only: true
+  - name: post_freckle_event
+    description: Ingest a Freckle practice event into the student pathway pipeline.
+    rest: post_event_freckle_events_post
+    api: Student Pathway Event Proxy
+    input_schema_source: FreckleEvent
+    read_only: false
+    caution: >-
+      The only write in the set. No idempotency key and no retraction path — an agent must not retry
+      blind on timeout.
+excluded_from_candidate:
+  - operation: health_check_health_get
+    reason: liveness probe, not an agent capability
+  - operation: health_health_get
+    reason: liveness probe, not an agent capability
+  - operation: launch_launch_post
+    reason: returns a 302 browser redirect, not an agent-consumable payload

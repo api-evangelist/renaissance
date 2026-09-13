@@ -1,0 +1,37 @@
+generated: '2026-09-13'
+method: searched
+source: https://www.renaissance.com/product-updates/
+url: https://www.renaissance.com/product-updates/
+scheme: dated product release notes (no semantic version, no API changelog)
+current_version: null
+note: >-
+  Renaissance publishes a dated product-update stream covering the whole portfolio. There is no
+  changelog for any of the three API contracts — the release notes describe end-user features, not
+  breaking changes to an interface. Dates below are the datePublished values on each post's own page.
+api_changelog_published: false
+entries:
+  - title: 'Back-to-School 2026: Introducing Star Preschool Numeracy and Star Preschool Whole Child'
+    date: '2026-06-04'
+    product: Star Preschool
+    breaking: false
+    url: https://www.renaissance.com/product_update/back-to-school-2026-introducing-star-preschool-numeracy-and-star-preschool-whole-child/
+  - title: Introducing the Star Preschool Literacy Caregiver Report
+    date: '2026-03-10'
+    product: Star Preschool
+    breaking: false
+    url: https://www.renaissance.com/product_update/introducing-the-star-preschool-literacy-caregiver-report/
+  - title: Accelerated Reader now offers full audio coverage for every quiz
+    date: '2026-03-02'
+    product: Accelerated Reader
+    breaking: false
+    url: https://www.renaissance.com/product_update/accelerated-reader-now-offers-full-audio-coverage-for-every-quiz/
+  - title: Introducing the new 3rd Grade Portfolio Report for Florida SchoolCity customers
+    date: '2026-02-26'
+    product: SchoolCity
+    breaking: false
+    url: https://www.renaissance.com/product_update/introducing-the-new-3rd-grade-portfolio-report-for-florida-schoolcity-customers/
+  - title: Supporting teachers with the new Lalilo Teacher Guide
+    date: '2026-02-24'
+    product: Lalilo
+    breaking: false
+    url: https://www.renaissance.com/product_update/supporting-teachers-with-the-new-lalilo-teacher-guide/

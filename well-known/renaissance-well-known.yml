@@ -1,0 +1,171 @@
+generated: '2026-09-13'
+method: probed
+source: live GET of the named /.well-known/ paths on every host in apis.yml, every OpenAPI host,
+  the docs/console host and the Renaissance authorization server
+note: >-
+  Two real documents were served. The OAuth 2.0 / OpenID Connect discovery document at
+  auth.renaissance.com is Renaissance's own authorization server (issuer https://auth.renaissance.com,
+  an Ory Hydra deployment) and is the document the Lexile API's securityScheme description points at.
+  The discovery document on support.renaissance.com is the Salesforce Experience Cloud community
+  Renaissance runs under its own domain (issuer https://support.renaissance.com). The security.txt
+  served at status.renaissance.com is NOT Renaissance's — its Canonical is
+  https://www.atlassian.com/.well-known/security.txt and every contact is Atlassian's, because the
+  status page is a hosted Atlassian Statuspage. It is recorded here as a probe result and NO
+  SecurityTxt pointer is emitted for it. Renaissance publishes no security.txt on any host it
+  controls.
+hosts:
+  - host: auth.renaissance.com
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: renaissance-auth-openid-configuration.json
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: renaissance-auth-openid-configuration.json
+        note: byte-identical to the openid-configuration document
+      - path: /.well-known/jwks.json
+        status: 200
+        file: renaissance-auth-jwks.json
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+  - host: support.renaissance.com
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: renaissance-support-openid-configuration.json
+      - path: /.well-known/security.txt
+        status: 401
+      - path: /.well-known/oauth-authorization-server
+        status: 401
+      - path: /.well-known/agent-card.json
+        status: 401
+      - path: /.well-known/agent.json
+        status: 401
+      - path: /.well-known/api-catalog
+        status: 401
+      - path: /.well-known/ai-plugin.json
+        status: 401
+  - host: status.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: renaissance-status-security.txt
+        note: >-
+          Atlassian's security.txt, served by the hosted Statuspage. Canonical points at
+          atlassian.com — not a Renaissance disclosure policy, and not scored as one.
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+  - host: www.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+  - host: renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+  - host: proficiency.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+  - host: events.proficiency.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+  - host: api.proxile.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+  - host: api.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+  - host: docs.renaissance.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404

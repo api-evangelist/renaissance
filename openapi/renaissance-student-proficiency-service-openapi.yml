@@ -1,0 +1,1034 @@
+openapi: 3.1.0
+info:
+  title: Student Proficiency Service
+  description: '
+
+    # Student Proficiency Service API
+
+
+    This service provides predictions for student proficiency in various math skills.
+
+    It uses machine learning models to generate predictions based on student and skill identifiers.
+
+
+    ## [Confluence docs found here](https://illuminate.atlassian.net/wiki/spaces/AE/pages/18196988627/SPS+Overview)
+
+
+    ## Key Features
+
+    * Predict student proficiency for multiple students and skills
+
+    * Real-time inference
+
+
+    ## Notes
+
+    * All timestamps are returned in ''YYYY-MM-DD HH:MM:SS'' format
+
+    * Predictions are returned as percentage correct (0-100)
+
+    * Authentication is required using JWT Bearer token
+
+    '
+  version: 1.0.0
+paths:
+  /v1/pathway/next-activity/{student_rgp_id}:
+    get:
+      tags:
+      - Pathway
+      summary: Get the next recommended activity for a student
+      description: "Returns the next activity that we recommend a student should complete with a deeplink\
+        \ to launch into the activity.\n\n    When no activity can be recommended the endpoint returns\
+        \ a `404` with a structured error body\n    (`detail.code`, `detail.message`, `detail.request_id`).\
+        \ Possible `code` values:\n\n    - `invalid_assessment_score`: The student is blocked from the\
+        \ pathway due to an invalid or insufficient assessment score.\n    - `cold_start_disabled`: The\
+        \ student requires a Cold Start placement test, but Cold Start routing is not enabled for this\
+        \ client.\n    - `invalid_grade`: The student's grade could not be mapped to a placement test.\n\
+        \    - `no_skills_available`: No skills are currently available to practice for this student."
+      operationId: get_next_activity_v1_pathway_next_activity__student_rgp_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: student_rgp_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: RGP student identifier
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+          title: Student Rgp Id
+        description: RGP student identifier
+      - name: contentArea
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Content area for the recommendation (e.g., 'math', 'ela')
+          example: math
+          title: Contentarea
+        description: Content area for the recommendation (e.g., 'math', 'ela')
+      - name: grade
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/Grade'
+          description: Student's grade level. Used to prioritize on-grade-level skills.
+          example: '3'
+        description: Student's grade level. Used to prioritize on-grade-level skills.
+      responses:
+        '200':
+          description: The recommended next activity for the student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NextActivityResponse'
+        '404':
+          description: 'No next activity could be determined for the student. The `detail.code` field
+            identifies the specific reason: `invalid_assessment_score`, `cold_start_disabled`, `invalid_grade`,
+            or `no_skills_available`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NextActivityErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/skill:
+    post:
+      tags:
+      - Predictions
+      summary: Predict student proficiency on a single skill
+      description: "Generate proficiency predictions for multiple students across multiple skills.\n\n\
+        \    The endpoint accepts a list of student IDs and skill IDs and returns predictions\n    for\
+        \ each student-skill combination. Predictions include the percentage correct\n    and the timestamp\
+        \ when the prediction was generated."
+      operationId: predict_proficiency_v1_skill_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleSkillInferenceRequest'
+        required: true
+      responses:
+        '200':
+          description: List of predictions for each student-skill combination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleSkillInferenceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /v1/skill-groups:
+    post:
+      tags:
+      - Predictions
+      summary: Predict student proficiency for a group of skills
+      description: "Generate proficiency predictions for multiple students across multiple skills, aggregate\
+        \ results by skill.\n\n    The endpoint accepts a list of student IDs and skill IDs and returns\
+        \ predictions\n    for each student-skill group."
+      operationId: predict_group_proficiency_v1_skill_groups_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: include_individual_predictions
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: When true, include individual skill predictions for each student in the response
+          default: false
+          title: Include Individual Predictions
+        description: When true, include individual skill predictions for each student in the response
+      - name: include_student_info
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: When true, include student first and last names in predictions
+          default: false
+          title: Include Student Info
+        description: When true, include student first and last names in predictions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupSkillInferenceRequest'
+      responses:
+        '200':
+          description: List of predictions for each student-skill group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSkillInferenceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/skill-groups/by-class:
+    post:
+      tags:
+      - Predictions
+      summary: Predict student proficiency for a class
+      description: "Generate proficiency predictions for all students in a class across multiple skills.\n\
+        \n    This endpoint queries the class roster to get student IDs, then runs the same\n    inference\
+        \ logic as /v1/skill-groups.\n\n    Use the include_student_info query parameter to include student\
+        \ names in the response."
+      operationId: predict_group_proficiency_by_class_v1_skill_groups_by_class_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: include_individual_predictions
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: When true, include individual skill predictions for each student
+          default: false
+          title: Include Individual Predictions
+        description: When true, include individual skill predictions for each student
+      - name: include_student_info
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: When true, include student first and last names in predictions
+          default: false
+          title: Include Student Info
+        description: When true, include student first and last names in predictions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ByClassInferenceRequest'
+      responses:
+        '200':
+          description: List of predictions for each student in the class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSkillInferenceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /reading-level/{student_id}:
+    get:
+      tags:
+      - Reading Level
+      summary: Get current reading level for a student
+      description: Returns the most recent reading level assessment for the specified student.
+      operationId: get_reading_level_endpoint_reading_level__student_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Student Id
+      responses:
+        '200':
+          description: Reading level with ZPD range, Lexile measure, and assessment timestamp
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingLevelResponse'
+        '404':
+          description: No reading level found for the given student
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/classes/{class_id}/students:
+    get:
+      tags:
+      - Classes
+      summary: Get students in a class
+      description: "Retrieve the list of students enrolled in a specific class.\n\n    Returns student\
+        \ identifiers and names for all students the authenticated user\n    is authorized to view in\
+        \ the specified class."
+      operationId: get_class_students_v1_classes__class_id__students_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: class_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Class Id
+      responses:
+        '200':
+          description: List of students in the class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassStudentsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/skills/validate:
+    post:
+      tags:
+      - Skills
+      summary: Validate skill IDs
+      description: "Check which skill IDs are supported for proficiency predictions.\n\n    Returns a\
+        \ list of supported skill IDs and a dict mapping unsupported skill IDs and the reason."
+      operationId: validate_skill_ids_v1_skills_validate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillValidationRequest'
+        required: true
+      responses:
+        '200':
+          description: Lists of supported and unsupported skill IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillValidationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /health:
+    get:
+      tags:
+      - Utility
+      summary: Health check
+      description: Returns the health status of the API
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Health status object
+          content:
+            application/json:
+              schema: {}
+  /launch:
+    post:
+      tags:
+      - Utility
+      summary: Launch endpoint
+      description: Accepts a JWT from LaunchControl, validates it, sets an auth cookie, and redirects
+        to Skills Grid.
+      operationId: launch_launch_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_launch_launch_post'
+        required: true
+      responses:
+        '302':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ActivityLaunch:
+      properties:
+        appCode:
+          $ref: '#/components/schemas/AppCode'
+          description: Application code identifying which app to launch
+          example: APPS_FR
+        deepLink:
+          additionalProperties: true
+          type: object
+          title: Deeplink
+          description: Deep link parameters for the activity
+          example:
+            activity: math_targeted
+            numQuestions: 5
+            skillId: abc123
+      type: object
+      required:
+      - appCode
+      - deepLink
+      title: ActivityLaunch
+      description: Nested activity launch details containing app code and deep link.
+    AppCode:
+      type: string
+      enum:
+      - APPS_FR
+      - APPS_LALILO
+      - QUIZ_ENGINE
+      title: AppCode
+      description: Application codes for activity launches.
+    Body_launch_launch_post:
+      properties:
+        jwt:
+          type: string
+          title: Jwt
+      type: object
+      required:
+      - jwt
+      title: Body_launch_launch_post
+    ByClassInferenceRequest:
+      properties:
+        class_id:
+          type: string
+          title: Class Id
+          description: Class identifier (class_renaissance_rp_identifier)
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+        rl_skill_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Rl Skill Ids
+          description: List of requested skill identifiers
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+      type: object
+      required:
+      - class_id
+      - rl_skill_ids
+      title: ByClassInferenceRequest
+      example:
+        class_id: 7424932e-cfae-4353-b2da-3408acb0fa88
+        rl_skill_ids:
+        - 4b3676fc-f7a5-47ae-84c5-2bca8e09ed5d
+        - 60bbc51a-a39f-e311-9503-005056801da1
+    ClassStudentsResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: abc123def456
+        class_id:
+          type: string
+          title: Class Id
+          description: Class identifier that was queried
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+        students:
+          items:
+            $ref: '#/components/schemas/StudentInfo'
+          type: array
+          title: Students
+          description: List of students in the class
+      type: object
+      required:
+      - request_id
+      - class_id
+      - students
+      title: ClassStudentsResponse
+      description: Response model for class students endpoint
+    Grade:
+      type: string
+      enum:
+      - EE
+      - PK
+      - K
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - '>12'
+      - Other
+      - Unknown
+      title: Grade
+    GroupSkillInferencePrediction:
+      properties:
+        student_renaissance_rp_identifier:
+          type: string
+          title: Student Renaissance Rp Identifier
+          description: Renaissance Growth Platform student identifier
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+        requested_skill_ids:
+          items:
+            type: string
+          type: array
+          title: Requested Skill Ids
+          description: List of requested skill identifiers
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+          - 72a3bfaa479de311b77c005056801da1
+        practiced_skill_ids:
+          items:
+            type: string
+          type: array
+          title: Practiced Skill Ids
+          description: List of practiced skill identifiers with valid predictions
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+        unpracticed_skill_ids:
+          items:
+            type: string
+          type: array
+          title: Unpracticed Skill Ids
+          description: List of requested skill identifiers that have not enough data for predictions or
+            have not been practiced by the student
+          example:
+          - 72a3bfaa479de311b77c005056801da1
+        invalid_skill_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Invalid Skill Ids
+          description: List of requested skill identifiers that are invalid for the client
+          example:
+          - 72a3bfaa479de311b77c005056801da1
+          nullable: true
+        proficiency:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          title: Proficiency
+          description: Predicted percentage correct (0-100)
+          example: 85.5
+        prediction_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Prediction Type
+          description: Products contributing to predicted proficiency score (has_star, has_freckle)
+          example: has_star,has_freckle
+        instructional_group:
+          anyOf:
+          - $ref: '#/components/schemas/InstructionalGroup'
+          - type: 'null'
+          description: Instructional group
+          example: enrichment
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error information if prediction failed
+          example:
+            code: insufficient_data
+            details:
+              invalidSkills:
+              - skill 5
+              practicedSkills:
+              - skill 4
+              reason: skills_not_practiced
+              recommendation: Student needs to practice "skill 1", "skill 2" and/or "skill 3" before predictions
+                for these skills can be generated
+              requestedSkills:
+              - skill 1
+              - skill 2
+              - skill 3
+              - skill 4
+              unpracticedSkills:
+              - skill 1
+              - skill 2
+              - skill 3
+            message: 'Error generating predictions: Student has not practiced the skills specified'
+        individual_predictions:
+          anyOf:
+          - additionalProperties:
+              $ref: '#/components/schemas/SingleSkillInferencePrediction'
+            type: object
+          - type: 'null'
+          title: Individual Predictions
+          description: Individual skill predictions for this student, keyed by skill ID. Only included
+            when include_individual_predictions=true in the request.
+        student_metadata:
+          anyOf:
+          - $ref: '#/components/schemas/StudentMetadata'
+          - type: 'null'
+          description: Student metadata (only included when include_student_info=true)
+      type: object
+      required:
+      - student_renaissance_rp_identifier
+      - requested_skill_ids
+      - practiced_skill_ids
+      - unpracticed_skill_ids
+      - invalid_skill_ids
+      title: GroupSkillInferencePrediction
+    GroupSkillInferenceRequest:
+      properties:
+        student_rgp_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Student Rgp Ids
+          description: List of Renaissance Growth Platform student identifiers
+          example:
+          - 7424932e-cfae-4353-b2da-3408acb0fa88
+          - 0b6fa02a-bfa5-4008-a016-12528451881c
+        rl_skill_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Rl Skill Ids
+          description: List of Renaissance Learning skill identifiers
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+          - 72a3bfaa479de311b77c005056801da1
+      type: object
+      required:
+      - student_rgp_ids
+      - rl_skill_ids
+      title: GroupSkillInferenceRequest
+      example:
+        rl_skill_ids:
+        - 4b3676fc-f7a5-47ae-84c5-2bca8e09ed5d
+        - 60bbc51a-a39f-e311-9503-005056801da1
+        - 5db878ca-c8f1-4ac4-b216-0f41c7ab9666
+        - 21a5bfaa-479d-e311-b77c-005056801da1
+        student_rgp_ids:
+        - 93da681e-b689-4e05-8bd3-ac708bd3a464
+        - 93da684c-fa6f-4929-bcf1-df2b8714024a
+    GroupSkillInferenceResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this API request
+          example: 7h8i9j0k1l2m
+        predictions:
+          items:
+            $ref: '#/components/schemas/GroupSkillInferencePrediction'
+          type: array
+          title: Predictions
+          description: List of predictions for each student-skill group
+      type: object
+      required:
+      - request_id
+      - predictions
+      title: GroupSkillInferenceResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    InstructionalGroup:
+      type: string
+      enum:
+      - APPROACHING
+      - INSTRUCTIONAL
+      - ENRICHMENT
+      title: InstructionalGroup
+    NextActivityError:
+      properties:
+        code:
+          $ref: '#/components/schemas/NextActivityErrorCode'
+          description: Machine-readable code identifying why no activity was found
+          example: no_skills_available
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation of why no activity was found
+          example: No skills are currently available to practice for this student.
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request, for log correlation
+          example: abc123def456
+      type: object
+      required:
+      - code
+      - message
+      - request_id
+      title: NextActivityError
+      description: Structured error body returned when no next activity can be determined.
+    NextActivityErrorCode:
+      type: string
+      enum:
+      - invalid_assessment_score
+      - cold_start_disabled
+      - invalid_grade
+      - no_skills_available
+      title: NextActivityErrorCode
+      description: Machine-readable reasons a next-activity recommendation could not be produced.
+    NextActivityErrorResponse:
+      properties:
+        detail:
+          $ref: '#/components/schemas/NextActivityError'
+      type: object
+      required:
+      - detail
+      title: NextActivityErrorResponse
+      description: 404 response envelope for the next-activity endpoint.
+      example:
+        detail:
+          code: no_skills_available
+          message: No skills are currently available to practice for this student.
+          request_id: abc123def456
+    NextActivityResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: abc123def456
+        title:
+          type: string
+          title: Title
+          description: Display title for the activity
+          example: Counting by 10s
+        description:
+          type: string
+          title: Description
+          description: Description text for the activity
+          example: Practice counting by 10s to build number sense.
+        activity:
+          $ref: '#/components/schemas/ActivityLaunch'
+          description: Activity launch details including app code and deep link
+      type: object
+      required:
+      - request_id
+      - title
+      - description
+      - activity
+      title: NextActivityResponse
+      description: Response model for next-activity endpoint
+      example:
+        activity:
+          appCode: APPS_FR
+          deepLink:
+            activity: math_targeted
+            numQuestions: 5
+            skillId: abc123
+        description: Practice counting by 10s to build number sense.
+        request_id: abc123def456
+        title: Counting by 10s
+    ReadingLevelResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: a1b2c3d4e5f6
+        zpdMin:
+          type: string
+          title: Zpdmin
+          description: Minimum Zone of Proximal Development level
+          example: '3.5'
+        zpdMax:
+          type: string
+          title: Zpdmax
+          description: Maximum Zone of Proximal Development level
+          example: '5.0'
+        lexile:
+          type: string
+          pattern: ^-?\d+L$
+          title: Lexile
+          description: Lexile measure
+          example: 740L
+        asOf:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Asof
+          description: ISO 8601 timestamp of when the latest assessment was taken. Null when grade-level
+            fallback is used and no assessment exists.
+          example: '2025-01-20T10:30:00Z'
+      type: object
+      required:
+      - request_id
+      - zpdMin
+      - zpdMax
+      - lexile
+      title: ReadingLevelResponse
+    SingleSkillInferencePrediction:
+      properties:
+        student_renaissance_rp_identifier:
+          type: string
+          title: Student Renaissance Rp Identifier
+          description: Renaissance Growth Platform student identifier
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+        rl_skill_id:
+          type: string
+          title: Rl Skill Id
+          description: Renaissance Learning skill identifier
+          example: fba2bfaa479de311b77c005056801da1
+        prediction_model:
+          type: string
+          title: Prediction Model
+          description: Name/version of the prediction model used
+          example: math_proficiency_v2.1
+        predicted_pct_correct:
+          type: number
+          maximum: 100.0
+          minimum: 0.0
+          title: Predicted Pct Correct
+          description: Predicted percentage correct (0-100)
+          example: 85.5
+        prediction_type:
+          type: string
+          title: Prediction Type
+          description: Products contributing to predicted proficiency score (has_star, has_freckle)
+          example: has_star,has_freckle
+        skill_is_practiced:
+          type: boolean
+          title: Skill Is Practiced
+          description: Indicator to identify if the skill was practiced by the student
+          example: true
+        prediction_ts:
+          type: string
+          title: Prediction Ts
+          description: Timestamp when the prediction was generated in 'YYYY-MM-DD HH:MM:SS' format
+          example: '2024-03-21 14:30:00'
+        instructional_group:
+          anyOf:
+          - $ref: '#/components/schemas/InstructionalGroup'
+          - type: 'null'
+          description: Instructional group based on predicted proficiency
+          example: INSTRUCTIONAL
+        proficiency:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          title: Proficiency
+          description: 'Blended proficiency score (model prediction averaged with STAR performance). '
+          example: 72.5
+      type: object
+      required:
+      - student_renaissance_rp_identifier
+      - rl_skill_id
+      - prediction_model
+      - predicted_pct_correct
+      - prediction_type
+      - skill_is_practiced
+      - prediction_ts
+      title: SingleSkillInferencePrediction
+    SingleSkillInferenceRequest:
+      properties:
+        student_rgp_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Student Rgp Ids
+          description: List of Renaissance Growth Platform student identifiers
+          example:
+          - 7424932e-cfae-4353-b2da-3408acb0fa88
+          - 0b6fa02a-bfa5-4008-a016-12528451881c
+        rl_skill_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Rl Skill Ids
+          description: List of Renaissance Learning skill identifiers
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+          - 72a3bfaa479de311b77c005056801da1
+      type: object
+      required:
+      - student_rgp_ids
+      - rl_skill_ids
+      title: SingleSkillInferenceRequest
+      example:
+        rl_skill_ids:
+        - 4b3676fc-f7a5-47ae-84c5-2bca8e09ed5d
+        - 60bbc51a-a39f-e311-9503-005056801da1
+        - 5db878ca-c8f1-4ac4-b216-0f41c7ab9666
+        - 21a5bfaa-479d-e311-b77c-005056801da1
+        student_rgp_ids:
+        - 93da681e-b689-4e05-8bd3-ac708bd3a464
+        - 93da684c-fa6f-4929-bcf1-df2b8714024a
+    SingleSkillInferenceResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this API request
+          example: a1b2c3d4e5f6
+        predictions:
+          items:
+            $ref: '#/components/schemas/SingleSkillInferencePrediction'
+          type: array
+          title: Predictions
+          description: List of predictions for each student-skill combination
+      type: object
+      required:
+      - request_id
+      - predictions
+      title: SingleSkillInferenceResponse
+      example:
+        predictions:
+        - predicted_pct_correct: 85.5
+          prediction_model: math_proficiency_v2.1
+          prediction_ts: '2024-03-21 14:30:00'
+          prediction_type: has_star,has_freckle
+          rl_skill_id: fba2bfaa479de311b77c005056801da1
+          skill_is_practiced: true
+          student_renaissance_rp_identifier: 7424932e-cfae-4353-b2da-3408acb0fa88
+        request_id: a1b2c3d4e5f6
+    SkillValidationRequest:
+      properties:
+        rl_skill_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Rl Skill Ids
+          description: List of Renaissance Learning skill IDs to validate
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+          - 72a3bfaa479de311b77c005056801da1
+      type: object
+      required:
+      - rl_skill_ids
+      title: SkillValidationRequest
+      description: Request model for skill validation endpoint.
+    SkillValidationResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: abc123def456
+        supported_skills:
+          items:
+            type: string
+          type: array
+          title: Supported Skills
+          description: List of supported skill IDs
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+        unsupported_skills:
+          additionalProperties:
+            type: string
+          type: object
+          title: Unsupported Skills
+          description: 'Map of skill ID to reason: ''invalid_format'', ''missing_usd'', or ''not_found'''
+          example:
+            72a3bfaa479de311b77c005056801da1: missing_usd
+            99a3bfaa479de311b77c005056801da1: not_found
+            not-a-uuid: invalid_format
+      type: object
+      required:
+      - request_id
+      - supported_skills
+      - unsupported_skills
+      title: SkillValidationResponse
+      description: Response model for skill validation endpoint
+      example:
+        request_id: abc123def456
+        supported_skills:
+        - fba2bfaa479de311b77c005056801da1
+        - 01a3bfaa479de311b77c005056801da1
+        unsupported_skills:
+          72a3bfaa479de311b77c005056801da1: missing_usd
+          99a3bfaa479de311b77c005056801da1: not_found
+          not-a-uuid: invalid_format
+    StudentInfo:
+      properties:
+        student_rgp_id:
+          type: string
+          title: Student Rgp Id
+          description: Student's Renaissance Growth Platform identifier
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        first_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Name
+          description: Student's first name
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Name
+          description: Student's last name
+      type: object
+      required:
+      - student_rgp_id
+      title: StudentInfo
+      description: Student information returned from class roster queries
+    StudentMetadata:
+      properties:
+        first_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Name
+          description: Student's first name
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Name
+          description: Student's last name
+      type: object
+      title: StudentMetadata
+      description: Optional student metadata included when include_student_info=true
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

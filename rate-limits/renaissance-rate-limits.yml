@@ -1,0 +1,27 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  openapi/renaissance-student-proficiency-service-openapi.yml,
+  openapi/renaissance-student-pathway-event-proxy-openapi.yml,
+  openapi/renaissance-lexile-api-openapi.yml, https://support.renaissance.com/s/
+limit_count: 0
+limits: []
+headers: []
+status_on_exhaustion: null
+note: >-
+  No published rate limits. None of the three contracts declares a 429 response, a Retry-After, a
+  RateLimit-* or an X-RateLimit-* header, and Renaissance publishes no developer documentation where
+  quotas could be stated — the support community renders client-side and covers district
+  configuration, not API throughput. The Lexile API sits behind an API Gateway that validates the
+  JWT and scope, so a gateway-level throttle very likely exists; it is not documented and was not
+  probed (probing a throttle on a school-data service would be abusive), so nothing is asserted here.
+evidence:
+  - url: https://api.proxile.renaissance.com/openapi.json
+    status: 200
+    finding: no 429 response, no rate-limit headers declared
+  - url: https://proficiency.renaissance.com/openapi.json
+    status: 200
+    finding: no 429 response, no rate-limit headers declared
+  - url: https://events.proficiency.renaissance.com/openapi.json
+    status: 200
+    finding: no 429 response, no rate-limit headers declared

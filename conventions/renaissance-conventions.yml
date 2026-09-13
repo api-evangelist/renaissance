@@ -1,0 +1,107 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  openapi/renaissance-student-proficiency-service-openapi.yml,
+  openapi/renaissance-student-pathway-event-proxy-openapi.yml,
+  openapi/renaissance-lexile-api-openapi.yml,
+  https://auth.renaissance.com/.well-known/openid-configuration
+note: >-
+  Renaissance publishes no cross-cutting API conventions document. Everything below is read out of
+  the three contracts and the authorization server discovery document. Where a convention is absent
+  that is recorded as absent, not inferred.
+auth:
+  style: bearer JWT
+  issuer: https://auth.renaissance.com
+  grant: client_credentials (named explicitly in the Lexile API securityScheme description)
+  scope_enforcement: API Gateway, audience must match the API URL
+  cross_link: authentication/renaissance-authentication.yml
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  header: null
+  retention: null
+  detail: >-
+    None of the five mutating operations (POST /v1/skill, POST /v1/skill-groups,
+    POST /v1/skill-groups/by-class, POST /v1/skills/validate, POST /freckle-events) declares an
+    Idempotency-Key header, a client-supplied request id, or any documented replay protection. Three
+    of the five are read-shaped POSTs (prediction and validation queries that create nothing), so the
+    real replay exposure is POST /freckle-events — an event ingest that answers 202 with no
+    deduplication key in the contract. An agent retrying a timed-out event post cannot tell whether
+    the first one landed.
+reversibility:
+  grade: none
+  detail: >-
+    There is no cancel, void, delete, undo or reversal operation anywhere in the three contracts, and
+    no stated window for reversing anything. The only genuinely state-changing operation is
+    POST /freckle-events, which ingests a learning event into the student pathway pipeline and
+    returns 202 with no handle — nothing in the published surface lets a caller retract it.
+  surfaces:
+    - operation: post_event_freckle_events_post
+      api: Student Pathway Event Proxy
+      write: true
+      reversal_operation: null
+      window: null
+      note: 202 Accepted, no returned identifier, no retraction path published.
+    - operation: predict_proficiency_v1_skill_post
+      api: Student Proficiency Service
+      write: false
+      note: POST used as a query; returns predictions, creates nothing.
+    - operation: predict_group_proficiency_v1_skill_groups_post
+      api: Student Proficiency Service
+      write: false
+    - operation: predict_group_proficiency_by_class_v1_skill_groups_by_class_post
+      api: Student Proficiency Service
+      write: false
+    - operation: validate_skill_ids_v1_skills_validate_post
+      api: Student Proficiency Service
+      write: false
+dry_run_mode:
+  supported: false
+  detail: No preview/simulate/validate-only flag on any write. POST /v1/skills/validate validates skill IDs, not a pending write.
+pagination:
+  style: none
+  detail: >-
+    GET /v1/classes/{class_id}/students returns a ClassStudentsResponse with no page, cursor, limit or
+    offset parameter and no next-link field. Collection size is whatever the class contains.
+filtering_and_expansion:
+  sparse_fields: false
+  expansion: false
+metadata:
+  supported: false
+request_tracing:
+  header: null
+  body_field: request_id
+  detail: >-
+    NextActivityError carries a required request_id "for log correlation" in the 404 body. No
+    request-id request or response HEADER is declared anywhere, so a caller can only correlate on the
+    one error path that returns it.
+versioning:
+  style: path prefix (/v1), inconsistently applied
+  cross_link: lifecycle/renaissance-lifecycle.yml
+error_envelope:
+  rfc9457: false
+  shapes:
+    - HTTPValidationError (422, FastAPI default)
+    - NextActivityErrorResponse (404, coded, carries request_id)
+  cross_link: errors/renaissance-problem-types.yml
+rate_limit_signaling:
+  headers_declared: []
+  status_on_exhaustion: null
+  detail: No 429 response and no RateLimit-* / X-RateLimit-* header is declared in any contract.
+  cross_link: rate-limits/renaissance-rate-limits.yml
+timestamps:
+  format: "'YYYY-MM-DD HH:MM:SS' (stated in the Student Proficiency Service description)"
+  timezone_declared: false
+  note: >-
+    A space-separated, timezone-less timestamp rather than RFC 3339 — an agent cannot resolve it to an
+    instant without knowing the service's zone, which the contract does not state.
+identifiers:
+  - name: student_rgp_id
+    detail: Renaissance Growth Platform student identifier, used by the pathway next-activity operation.
+  - name: student_id
+    detail: Used by the reading-level operation; the contract does not state whether it is the same id space as student_rgp_id.
+  - name: class_id
+    detail: Class identifier for the class roster and by-class prediction operations.
+  - name: isbn13
+    detail: ISBN-13 key for the Lexile API.

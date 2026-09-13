@@ -1,0 +1,52 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Renaissance Student Proficiency Service
+  version: 1.0.0
+extends: ../openapi/renaissance-student-proficiency-service-openapi.yml
+x-generated: '2026-09-13'
+x-method: generated
+x-source: >-
+  Derived from probes of https://proficiency.renaissance.com/openapi.json and
+  https://auth.renaissance.com/.well-known/openid-configuration. The original contract is never
+  mutated; these are our additions only.
+actions:
+  - target: $.info
+    update:
+      contact:
+        name: Renaissance Learning, Inc.
+        url: https://www.renaissance.com/about-us/contact-renaissance/
+      x-api-evangelist-note: >-
+        Served publicly and anonymously at https://proficiency.renaissance.com/openapi.json; every
+        scored operation is bearer-gated. Not part of a published developer program.
+  - target: $
+    update:
+      servers:
+        - url: https://proficiency.renaissance.com
+          description: >-
+            Production host the contract is served from. The original document declares no servers[],
+            so a client generated from it has no base URL at all.
+  - target: $.components.securitySchemes.HTTPBearer
+    update:
+      bearerFormat: JWT
+      x-token-endpoint: https://auth.renaissance.com/oauth2/token
+      x-issuer: https://auth.renaissance.com
+      description: >-
+        The contract declares only `http/bearer`. The issuer is Renaissance's own OAuth 2.0 /
+        OIDC authorization server at auth.renaissance.com (discovery document returns 200), which the
+        sibling Lexile API names explicitly in its own securityScheme description.
+  - target: $.paths['/v1/pathway/next-activity/{student_rgp_id}'].get
+    update:
+      x-error-codes:
+        - invalid_assessment_score
+        - cold_start_disabled
+        - invalid_grade
+        - no_skills_available
+      x-api-evangelist-note: >-
+        The only coded error surface in the Renaissance contract set; branch on detail.code, not on
+        the message string.
+  - target: $.paths['/reading-level/{student_id}'].get
+    update:
+      x-api-evangelist-note: >-
+        Unversioned path in an otherwise /v1-prefixed service, and the 404 response declares no
+        schema. The contract does not state whether student_id is the same identifier space as
+        student_rgp_id used elsewhere in the same service.

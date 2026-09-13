@@ -1,0 +1,104 @@
+generated: '2026-09-13'
+method: probed
+source: https://auth.renaissance.com/.well-known/openid-configuration
+docs: https://auth.renaissance.com/.well-known/openid-configuration
+summary:
+  types:
+    - http
+    - oauth2
+    - openIdConnect
+  model: >-
+    Every Renaissance API contract found declares a single HTTP bearer JWT scheme. The tokens are
+    issued by Renaissance's own OAuth 2.0 / OpenID Connect authorization server at
+    auth.renaissance.com, which serves a live discovery document and JWKS. The Lexile API's
+    securityScheme description names the token endpoint and grant explicitly (client credentials),
+    which is what ties the spec-level bearer scheme to the authorization server.
+authorization_server:
+  issuer: https://auth.renaissance.com
+  discovery: https://auth.renaissance.com/.well-known/openid-configuration
+  oauth_authorization_server: https://auth.renaissance.com/.well-known/oauth-authorization-server
+  http_status: 200
+  software: Ory Hydra (identified by the credentials_endpoint_draft_00 / credentials_supported_draft_00 keys)
+  authorization_endpoint: https://auth.renaissance.com/oauth2/auth
+  token_endpoint: https://auth.renaissance.com/oauth2/token
+  device_authorization_endpoint: https://auth.renaissance.com/oauth2/device/auth
+  userinfo_endpoint: https://auth.renaissance.com/userinfo
+  revocation_endpoint: https://auth.renaissance.com/oauth2/revoke
+  end_session_endpoint: https://auth.renaissance.com/oauth2/sessions/logout
+  jwks_uri: https://auth.renaissance.com/.well-known/jwks.json
+  grant_types_supported:
+    - authorization_code
+    - implicit
+    - client_credentials
+    - refresh_token
+    - urn:ietf:params:oauth:grant-type:device_code
+  token_endpoint_auth_methods_supported:
+    - client_secret_post
+    - client_secret_basic
+    - private_key_jwt
+    - none
+  code_challenge_methods_supported:
+    - plain
+    - S256
+  id_token_signing_alg_values_supported:
+    - RS256
+  scopes_supported:
+    - openid
+    - offline
+    - offline_access
+  non_prod_token_endpoint: https://auth.stage.renaissance.com/oauth2/token
+schemes:
+  - name: Bearer
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: >-
+      JWT from Renaissance auth (client credentials). Token URL
+      https://auth.stage.renaissance.com/oauth2/token (non-prod) or
+      https://auth.renaissance.com/oauth2/token (prod). Request scope ren.lexile.read; the audience
+      must match the API URL. Quoted verbatim from the Lexile API securityScheme description.
+    scope_required: ren.lexile.read
+    enforced_by: API Gateway
+    sources:
+      - openapi/renaissance-lexile-api-openapi.yml
+  - name: HTTPBearer
+    type: http
+    scheme: bearer
+    description: >-
+      HTTP bearer scheme applied to every scored operation of the Student Proficiency Service and the
+      Student Pathway Event Proxy. The specs declare no bearerFormat and no flows; the issuer is
+      established by the authorization server above, not by the spec.
+    sources:
+      - openapi/renaissance-student-proficiency-service-openapi.yml
+      - openapi/renaissance-student-pathway-event-proxy-openapi.yml
+unauthenticated_operations:
+  - operationId: health_check_health_get
+    path: /health
+    api: Student Proficiency Service
+  - operationId: launch_launch_post
+    path: /launch
+    api: Student Proficiency Service
+  - operationId: health_health_get
+    path: /health
+    api: Student Pathway Event Proxy
+other_identity_surfaces:
+  - name: Renaissance Support community (Salesforce Experience Cloud)
+    issuer: https://support.renaissance.com
+    discovery: https://support.renaissance.com/.well-known/openid-configuration
+    http_status: 200
+    note: >-
+      Salesforce-provided OIDC surface running under a Renaissance-controlled host. It authenticates
+      the support community, not the product APIs, and its scopes_supported list is Salesforce's
+      stock platform set.
+  - name: Single sign-on for districts
+    note: >-
+      Renaissance product sign-in supports Google, Microsoft and Clever SSO plus SAML; recorded from
+      the provider's support material, not probed.
+probe_evidence:
+  - url: https://auth.renaissance.com/.well-known/openid-configuration
+    status: 200
+  - url: https://auth.renaissance.com/.well-known/jwks.json
+    status: 200
+  - url: https://api.proxile.renaissance.com/api/lexile/9780439064873
+    status: 401
+    note: anonymous call to a real operation returns 401, confirming the gate is live

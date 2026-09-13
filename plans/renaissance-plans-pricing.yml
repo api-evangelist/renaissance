@@ -1,0 +1,18 @@
+generated: '2026-09-13'
+method: searched
+source: https://www.renaissance.com/about-us/contact-renaissance/
+plan_count: 0
+plans: []
+pricing_page_published: false
+note: >-
+  Renaissance publishes no pricing page and no plan tiers. https://www.renaissance.com/pricing/
+  returns 404, and nothing in llms.txt, the sitemap or the product pages names a price, a quota or a
+  tier. Purchasing is district/school procurement through a quote request and a sales conversation —
+  the site routes every commercial intent to the contact form. The API contracts in this repository
+  are internal service surfaces reached through a customer contract, not sold as metered API
+  products, so there is no per-call price to record either.
+evidence:
+  - url: https://www.renaissance.com/pricing/
+    status: 404
+  - url: https://www.renaissance.com/about-us/contact-renaissance/
+    status: 200

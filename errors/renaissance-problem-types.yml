@@ -1,0 +1,113 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  openapi/renaissance-student-proficiency-service-openapi.yml,
+  openapi/renaissance-student-pathway-event-proxy-openapi.yml,
+  openapi/renaissance-lexile-api-openapi.yml
+format: non-rfc9457
+note: >-
+  No contract returns application/problem+json, so there are no RFC 9457 problem types to catalog.
+  Two distinct error envelopes are in use across the three APIs and both are recorded here as they
+  are declared. Renaissance publishes no public error reference page to enrich these from — the
+  developer-facing material for these services lives behind the Illuminate Confluence space linked
+  in the Student Proficiency Service description, which is not public.
+envelopes:
+  - name: FastAPI validation envelope
+    media_type: application/json
+    schema: HTTPValidationError
+    shape: '{ "detail": [ { "loc": [string|int], "msg": string, "type": string } ] }'
+    applies_to:
+      - Student Proficiency Service
+      - Student Pathway Event Proxy
+    status: 422
+  - name: NextActivityErrorResponse
+    media_type: application/json
+    schema: NextActivityErrorResponse
+    shape: '{ "detail": { "code": NextActivityErrorCode, "message": string, "request_id": string } }'
+    applies_to:
+      - Student Proficiency Service
+    status: 404
+    note: >-
+      The only machine-readable, coded error surface Renaissance publishes. It carries a request_id
+      for log correlation, which is the closest thing to a tracing convention in the contract set.
+problem_types:
+  - status: 422
+    title: Validation Error
+    type: HTTPValidationError
+    detail: >-
+      Request body or path parameter failed schema validation. detail[] names the failing location,
+      a message and a type token.
+    remediation: Correct the named field and retry; deterministic, safe to retry after a fix.
+    operations:
+      - predict_proficiency_v1_skill_post
+      - predict_group_proficiency_v1_skill_groups_post
+      - predict_group_proficiency_by_class_v1_skill_groups_by_class_post
+      - get_next_activity_v1_pathway_next_activity__student_rgp_id__get
+      - get_reading_level_endpoint_reading_level__student_id__get
+      - get_class_students_v1_classes__class_id__students_get
+      - validate_skill_ids_v1_skills_validate_post
+      - launch_launch_post
+      - post_event_freckle_events_post
+    source: derived from OpenAPI 422 responses
+  - status: 404
+    title: No next activity could be determined for the student
+    type: NextActivityErrorResponse
+    codes:
+      - code: invalid_assessment_score
+        meaning: The student's assessment score cannot drive a recommendation.
+      - code: cold_start_disabled
+        meaning: Cold-start recommendation is disabled for this student or tenant.
+      - code: invalid_grade
+        meaning: The student's grade value is outside the supported range.
+      - code: no_skills_available
+        meaning: No skills are currently available to practice for this student.
+    detail: Structured 404 carrying a machine-readable code, a human message and a request_id.
+    remediation: >-
+      Branch on detail.code rather than the message string; none of the four codes is retryable
+      without a change in student state.
+    operations:
+      - get_next_activity_v1_pathway_next_activity__student_rgp_id__get
+    source: derived from OpenAPI 404 response + NextActivityErrorCode enum
+  - status: 404
+    title: No reading level found for the given student
+    type: untyped
+    detail: Declared with no response schema — the body shape is not specified in the contract.
+    operations:
+      - get_reading_level_endpoint_reading_level__student_id__get
+    source: derived from OpenAPI 404 response
+  - status: 400
+    title: Missing or invalid isbn13
+    type: untyped
+    detail: Lexile API rejects a malformed ISBN-13 path parameter. No body schema is declared.
+    operations:
+      - GET /api/lexile/{isbn13}
+    source: derived from OpenAPI 400 response
+  - status: 401
+    title: Unauthorized
+    type: untyped
+    detail: >-
+      Missing or invalid bearer JWT. Observed live on an anonymous call to
+      https://api.proxile.renaissance.com/api/lexile/9780439064873 (HTTP 401).
+    remediation: Obtain a client-credentials token from https://auth.renaissance.com/oauth2/token with the required scope.
+    operations:
+      - GET /api/lexile/{isbn13}
+    source: derived from OpenAPI 401 response, confirmed by live probe
+  - status: 403
+    title: Forbidden
+    type: untyped
+    detail: Token is valid but lacks the required scope (ren.lexile.read) or the audience does not match the API URL.
+    operations:
+      - GET /api/lexile/{isbn13}
+    source: derived from OpenAPI 403 response
+  - status: 404
+    title: No Lexile data for ISBN
+    type: untyped
+    detail: The ISBN-13 resolves to no stored Lexile record.
+    operations:
+      - GET /api/lexile/{isbn13}
+    source: derived from OpenAPI 404 response
+gaps:
+  - The Student Proficiency Service and Event Proxy declare NO 401 or 403 response despite every
+    scored operation being bearer-gated — an agent cannot tell an auth failure from an unhandled one
+    by reading the contract.
+  - No 429 response, no 5xx response, and no retry guidance anywhere in the three contracts.

@@ -1,0 +1,121 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  https://site.imsglobal.org/certifications/renaissance-learning (active-certification listing),
+  https://www.ed-fi.org/technology-partners/renaissance/, https://trust.renaissance.com/, and the
+  live discovery document at https://auth.renaissance.com/.well-known/openid-configuration
+note: >-
+  Renaissance's interoperability posture is almost entirely domain-standard rather than generic REST
+  convention. The 1EdTech certification register lists 14 certified Renaissance products, the Ed-Fi
+  Alliance lists a current Assessment Outcomes API credential for DnA, and the trust center names the
+  security/compliance programs. Everything below is recorded against the page that states it.
+conformance:
+  - id: oauth2
+    conforms: true
+    evidence: https://auth.renaissance.com/.well-known/openid-configuration
+    detail: >-
+      Renaissance operates its own OAuth 2.0 authorization server (issuer https://auth.renaissance.com).
+      grant_types_supported includes authorization_code, client_credentials, refresh_token and the
+      RFC 8628 device code grant.
+  - id: oidc
+    conforms: true
+    evidence: https://auth.renaissance.com/.well-known/openid-configuration
+    detail: >-
+      OpenID Provider metadata served at the RFC 8414 / OIDC Discovery path, with a live JWKS,
+      userinfo, end_session and backchannel/frontchannel logout endpoints. id_token_signing_alg RS256.
+  - id: rfc8414
+    conforms: true
+    evidence: https://auth.renaissance.com/.well-known/oauth-authorization-server
+    detail: The oauth-authorization-server metadata document is served and is byte-identical to the OIDC one.
+  - id: rfc7636
+    conforms: true
+    evidence: https://auth.renaissance.com/.well-known/openid-configuration
+    detail: PKCE advertised — code_challenge_methods_supported includes S256.
+  - id: rfc8628
+    conforms: true
+    evidence: https://auth.renaissance.com/.well-known/openid-configuration
+    detail: Device authorization grant endpoint published at /oauth2/device/auth.
+  - id: rfc9457
+    conforms: false
+    evidence: openapi/renaissance-student-proficiency-service-openapi.yml
+    detail: >-
+      No application/problem+json responses in any contract. Errors are FastAPI-shaped
+      (HTTPValidationError on 422) or a bespoke NextActivityErrorResponse envelope.
+  - id: pagination
+    conforms: false
+    evidence: openapi/renaissance-student-proficiency-service-openapi.yml
+    detail: No collection operation declares page/cursor/limit parameters.
+  - id: idempotency
+    conforms: false
+    evidence: openapi/renaissance-student-proficiency-service-openapi.yml
+    detail: No Idempotency-Key header is declared on any of the five mutating operations.
+domain_standards:
+  - id: oneroster
+    name: 1EdTech OneRoster 1.1
+    conforms: true
+    role: certified product
+    evidence: https://site.imsglobal.org/certifications/renaissance-learning
+    detail: >-
+      Twelve Renaissance products carry an active OneRoster 1.1 certification (certified with v1.0 of
+      the conformance test): DnA, Fastbridge by Renaissance, Freckle Education, Lalilo by Renaissance,
+      myON, Renaissance Accelerated Reader, Renaissance Star CBM Lectura, Renaissance Star CBM Math,
+      Renaissance Star CBM Reading, Renaissance Star Early Literacy, Renaissance Star Math and
+      Renaissance Star Reading. This is the rostering contract districts actually integrate against.
+    products:
+      - DnA
+      - Fastbridge by Renaissance
+      - Freckle Education
+      - Lalilo by Renaissance
+      - myON
+      - Renaissance Accelerated Reader
+      - Renaissance Star CBM Lectura
+      - Renaissance Star CBM Math
+      - Renaissance Star CBM Reading
+      - Renaissance Star Early Literacy
+      - Renaissance Star Math
+      - Renaissance Star Reading
+  - id: lti
+    name: 1EdTech Learning Tools Interoperability (LTI) v1.3 + LTI Advantage
+    conforms: true
+    role: certified product
+    evidence: https://site.imsglobal.org/certifications/renaissance-learning
+    detail: >-
+      Nearpod is certified for LTI v1.3, LTI Advantage and LTI Deep Linking 2.0 (conformance v1.2).
+      SchoolCity is certified for LTI v1.3, LTI Advantage, LTI Deep Linking 2.0 and LTI Assignment &
+      Grade Services 2.0 (conformance v1).
+    products:
+      - Nearpod
+      - SchoolCity
+  - id: ed-fi
+    name: Ed-Fi Assessment Outcomes API for Data Standard Suite 3
+    conforms: true
+    role: certified technology partner
+    evidence: https://www.ed-fi.org/technology-partners/renaissance/
+    detail: >-
+      Credential held by DnA (Renaissance Learning, Inc.), version 14.2 and above, valid as of
+      2026-08-04, verified at Boston Public Schools (MA), Chico USD (CA) and Seaford SD (DE).
+  - id: saml
+    name: SAML 2.0 single sign-on
+    conforms: true
+    role: service provider
+    evidence: https://trust.renaissance.com/
+    detail: >-
+      SAML SSO plus Google, Microsoft and Clever sign-in are offered for district identity; recorded
+      from provider material, not independently probed.
+compliance:
+  source: https://trust.renaissance.com/
+  note: >-
+    Trust center is a SafeBase-hosted portal at trust.renaissance.com. It returns 403 to a plain
+    crawler and renders for a browser user agent; the certification list below is read from the
+    rendered page. Document downloads are access-gated behind a request flow.
+  certifications:
+    - SOC 2 Type 2
+    - SOC 2 Type 1
+    - Cyber Essentials
+    - 1EdTech Certified
+    - ST4S (Safer Technologies 4 Schools)
+  regulatory:
+    - FERPA
+    - COPPA
+  documents_gated: true
+  subprocessors_published: true

@@ -1,0 +1,42 @@
+openapi: 3.0.1
+info:
+  title: Lexile API
+  version: 1.0.0
+  description: Lexile data by ISBN-13. API Gateway validates JWT; use Authorize to attach a Bearer token
+    for Try it out.
+servers: []
+paths:
+  /api/lexile/{isbn13}:
+    get:
+      summary: Get Lexile data by ISBN-13
+      description: 'Returns JSON from S3 at path isbn13/isbn13.json. Required OAuth scope: ren.lexile.read
+        (enforced by API Gateway).'
+      parameters:
+      - name: isbn13
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ISBN-13 identifier
+      responses:
+        '200':
+          description: Lexile book JSON
+        '400':
+          description: Missing or invalid isbn13
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: No Lexile data for ISBN
+      security:
+      - Bearer: []
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT from Renaissance auth (client credentials). Token URL: https://auth.stage.renaissance.com/oauth2/token
+        (non-prod) or https://auth.renaissance.com/oauth2/token (prod). Request scope ren.lexile.read,
+        audience must match API URL.'

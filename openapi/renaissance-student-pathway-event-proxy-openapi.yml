@@ -1,0 +1,249 @@
+openapi: 3.1.0
+info:
+  title: Student Pathway Event Proxy
+  version: 1.0.0
+paths:
+  /freckle-events:
+    post:
+      tags:
+      - Events
+      summary: Post Event
+      operationId: post_event_freckle_events_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreckleEvent'
+        required: true
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    AnswerValue:
+      properties:
+        tag:
+          type: string
+          title: Tag
+          description: Answer format (e.g. multiple_choice, singular_or, bucket)
+        value:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value
+          description: The student's selected answer
+      type: object
+      required:
+      - tag
+      title: AnswerValue
+    FreckleEvent:
+      properties:
+        answerToken:
+          type: string
+          title: Answertoken
+        studentId:
+          type: integer
+          title: Studentid
+        questionId:
+          type: string
+          title: Questionid
+        rlSkillId:
+          type: string
+          title: Rlskillid
+        product:
+          $ref: '#/components/schemas/FreckleProduct'
+        correctness:
+          type: integer
+          maximum: 100.0
+          minimum: 0.0
+          title: Correctness
+        occurredAt:
+          type: string
+          format: date-time
+          title: Occurredat
+        version:
+          type: string
+          title: Version
+        metadata:
+          $ref: '#/components/schemas/FreckleEventMetadata'
+        skillRslId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Skillrslid
+        studentRgpId:
+          type: string
+          title: Studentrgpid
+      type: object
+      required:
+      - answerToken
+      - studentId
+      - questionId
+      - rlSkillId
+      - product
+      - correctness
+      - occurredAt
+      - version
+      - metadata
+      - studentRgpId
+      title: FreckleEvent
+    FreckleEventMetadata:
+      properties:
+        sessionId:
+          type: integer
+          title: Sessionid
+        durationSeconds:
+          type: integer
+          title: Durationseconds
+        attempts:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Attempts
+        answerPositionInSession:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Answerpositioninsession
+        assignmentType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Assignmenttype
+        context:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Context
+        standardSetId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Standardsetid
+        skillProgressionOrder:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Skillprogressionorder
+        skillProgressionSuperOrder:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Skillprogressionsuperorder
+        startedFGP:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Startedfgp
+        automaticHintShown:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Automatichintshown
+        clickedOnHint:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Clickedonhint
+        usedHint:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Usedhint
+        usedVideo:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Usedvideo
+        usedKeyword:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Usedkeyword
+        answer:
+          anyOf:
+          - $ref: '#/components/schemas/AnswerValue'
+          - type: 'null'
+      type: object
+      required:
+      - sessionId
+      - durationSeconds
+      title: FreckleEventMetadata
+    FreckleProduct:
+      type: string
+      enum:
+      - math_adaptive
+      - math_targeted
+      - focus_skills_practice
+      - math_assessments
+      - math_ren_intel_pathway
+      - ela_adaptive_skills_practice
+      - ela_targeted_skills_practice
+      - ela_focus_skills_practice
+      - ela_word_study
+      - ela_articles_reading
+      - science_articles_reading
+      - social_studies_articles_reading
+      - ela_ren_intel_pathway
+      title: FreckleProduct
+      description: Enum of all the strings that can appear in the products field
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

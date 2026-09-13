@@ -1,0 +1,22 @@
+generated: '2026-09-13'
+method: generated
+source: >-
+  openapi/renaissance-student-proficiency-service-openapi.yml,
+  openapi/renaissance-student-pathway-event-proxy-openapi.yml
+note: >-
+  Renaissance publishes no skills/ or AGENTS.md of its own. These two are generated from real
+  operationIds in the contracts above plus the conventions and error rules recorded in this
+  repository. Every operationId referenced was grepped out of the published spec; none is invented.
+  A third skill for the Lexile API was not written — a single unnamed operation with no operationId
+  does not warrant one.
+skills:
+  - name: renaissance-student-proficiency-lookup
+    file: renaissance-student-proficiency-lookup.md
+    api: Student Proficiency Service
+    operations: 7
+    write_operations: 0
+  - name: renaissance-freckle-event-ingest
+    file: renaissance-freckle-event-ingest.md
+    api: Student Pathway Event Proxy
+    operations: 2
+    write_operations: 1

@@ -1,0 +1,12 @@
+generated: '2026-09-13'
+method: searched
+probe: true
+source: https://trust.renaissance.com/
+url: https://trust.renaissance.com/
+certifications:
+- SOC 2
+evidence:
+- source: https://trust.renaissance.com/
+  keywords:
+  - soc 2
+  - trust center

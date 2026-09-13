@@ -1,0 +1,34 @@
+generated: '2026-09-13'
+method: probed
+source: https://auth.renaissance.com/.well-known/openid-configuration
+docs: https://auth.renaissance.com/.well-known/openid-configuration
+note: >-
+  Renaissance publishes no scope reference page. None of the three OpenAPI contracts declares an
+  oauth2 securityScheme with a flows/scopes block, so nothing could be derived from the specs by
+  derive-oauth-scopes.py (it reported 0 providers with oauth2). What IS published is the
+  authorization server's own scopes_supported list plus one product scope named in prose inside the
+  Lexile API securityScheme description. Both are recorded below with their exact evidence. The full
+  product scope namespace is not public and would require authenticated client registration to
+  enumerate.
+authorization_server: https://auth.renaissance.com
+scope_count: 4
+scopes:
+  - name: openid
+    description: Standard OpenID Connect scope, advertised in the authorization server discovery document.
+    source: https://auth.renaissance.com/.well-known/openid-configuration
+  - name: offline
+    description: Advertised in the authorization server discovery document.
+    source: https://auth.renaissance.com/.well-known/openid-configuration
+  - name: offline_access
+    description: Refresh-token scope, advertised in the authorization server discovery document.
+    source: https://auth.renaissance.com/.well-known/openid-configuration
+  - name: ren.lexile.read
+    description: >-
+      Read access to Lexile book data by ISBN-13. Enforced by the API Gateway in front of
+      api.proxile.renaissance.com; the token audience must match the API URL.
+    api: Lexile API
+    source: openapi/renaissance-lexile-api-openapi.yml
+gaps:
+  - The `ren.` prefix implies a product scope namespace; only ren.lexile.read is publicly named.
+  - The Student Proficiency Service and Student Pathway Event Proxy declare a bare HTTP bearer scheme
+    and name no scope at all.

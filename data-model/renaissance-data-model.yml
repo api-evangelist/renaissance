@@ -1,0 +1,133 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  openapi/renaissance-student-proficiency-service-openapi.yml,
+  openapi/renaissance-student-pathway-event-proxy-openapi.yml,
+  openapi/renaissance-lexile-api-openapi.yml
+note: >-
+  Derived from $ref links and id-reference fields in the three contracts. There is no published
+  object reference to enrich it from. The graph is small because the surface is: two prediction
+  services and a book lookup, not a platform data API.
+identifier_domains:
+  - id: student_rgp_id
+    label: Renaissance Growth Platform student id
+    appears_as:
+      - student_rgp_id (StudentInfo, SingleSkillInferenceRequest.student_rgp_ids, path parameter)
+      - studentRgpId (FreckleEvent)
+      - student_renaissance_rp_identifier (SingleSkillInferencePrediction)
+    note: >-
+      The same student is keyed three different ways across the two services. Nothing in either
+      contract states that student_id on /reading-level/{student_id} is the same id space.
+  - id: rl_skill_id
+    label: Renaissance learning skill id
+    appears_as:
+      - rl_skill_ids (SingleSkillInferenceRequest, GroupSkillInferenceRequest, ByClassInferenceRequest)
+      - rl_skill_id (SingleSkillInferencePrediction)
+      - rlSkillId (FreckleEvent)
+  - id: class_id
+    label: Class identifier
+    appears_as:
+      - class_id (ByClassInferenceRequest, ClassStudentsResponse, path parameter)
+  - id: isbn13
+    label: ISBN-13
+    appears_as:
+      - isbn13 (Lexile API path parameter)
+entities:
+  - name: Student
+    schema: StudentInfo
+    fields: [student_rgp_id, first_name, last_name]
+    pii: true
+  - name: StudentMetadata
+    schema: StudentMetadata
+    fields: [first_name, last_name]
+    pii: true
+  - name: ClassRoster
+    schema: ClassStudentsResponse
+    fields: [request_id, class_id, students]
+  - name: SkillPrediction
+    schema: SingleSkillInferencePrediction
+    fields: [student_renaissance_rp_identifier, rl_skill_id, prediction_model, predicted_pct_correct,
+             prediction_type, skill_is_practiced, prediction_ts, instructional_group, proficiency]
+  - name: SkillGroupPrediction
+    schema: GroupSkillInferencePrediction
+  - name: NextActivity
+    schema: NextActivityResponse
+    fields: [request_id, title, description, activity]
+  - name: ActivityLaunch
+    schema: ActivityLaunch
+    fields: [appCode, deepLink]
+  - name: ReadingLevel
+    schema: ReadingLevelResponse
+    fields: [request_id, zpdMin, zpdMax, lexile, asOf]
+  - name: SkillValidation
+    schema: SkillValidationResponse
+    fields: [request_id, supported_skills, unsupported_skills]
+  - name: FreckleEvent
+    schema: FreckleEvent
+    fields: [answerToken, studentId, questionId, rlSkillId, product, correctness, occurredAt,
+             version, metadata, skillRslId, studentRgpId]
+  - name: FreckleEventMetadata
+    schema: FreckleEventMetadata
+  - name: AnswerValue
+    schema: AnswerValue
+    fields: [tag, value]
+relationships:
+  - from: ClassStudentsResponse
+    to: StudentInfo
+    kind: has_many
+    via: students
+  - from: SingleSkillInferenceResponse
+    to: SingleSkillInferencePrediction
+    kind: has_many
+    via: $ref array
+  - from: GroupSkillInferenceResponse
+    to: GroupSkillInferencePrediction
+    kind: has_many
+    via: $ref array
+  - from: NextActivityResponse
+    to: ActivityLaunch
+    kind: has_one
+    via: activity
+  - from: NextActivityErrorResponse
+    to: NextActivityError
+    kind: has_one
+    via: detail
+  - from: FreckleEvent
+    to: FreckleEventMetadata
+    kind: has_one
+    via: metadata
+  - from: FreckleEventMetadata
+    to: AnswerValue
+    kind: has_one
+    via: answer
+  - from: FreckleEvent
+    to: Student
+    kind: belongs_to
+    via: studentRgpId
+  - from: SingleSkillInferencePrediction
+    to: Student
+    kind: belongs_to
+    via: student_renaissance_rp_identifier
+  - from: ByClassInferenceRequest
+    to: ClassRoster
+    kind: belongs_to
+    via: class_id
+enumerations:
+  - name: InstructionalGroup
+    values: [APPROACHING, INSTRUCTIONAL, ENRICHMENT]
+  - name: AppCode
+    values: [APPS_FR, APPS_LALILO, QUIZ_ENGINE]
+    note: Freckle, Lalilo and the quiz engine are the three launch targets a recommended activity can point at.
+  - name: Grade
+    values: [EE, PK, K, '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '>12', Other, Unknown]
+  - name: FreckleProduct
+    values: [math_adaptive, math_targeted, focus_skills_practice, math_assessments,
+             math_ren_intel_pathway, ela_adaptive_skills_practice, ela_targeted_skills_practice,
+             ela_focus_skills_practice, ela_word_study, ela_articles_reading,
+             science_articles_reading, social_studies_articles_reading, ela_ren_intel_pathway]
+  - name: NextActivityErrorCode
+    values: [invalid_assessment_score, cold_start_disabled, invalid_grade, no_skills_available]
+privacy_note: >-
+  StudentInfo and StudentMetadata carry K-12 student first and last names, which is FERPA-regulated
+  data. No student PII was fetched, stored or is reproduced anywhere in this repository — every
+  operation that would return it is bearer-gated and was probed only to the point of a 401.

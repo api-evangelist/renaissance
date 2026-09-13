@@ -64,4 +64,4 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Renaissance is a company surfaced via the API Evangelist harvest backlog (source: absent-parent) and added to the network as a stub for full-pipeline profiling.
+Renaissance Learning, Inc. is a pre-K–12 education technology company (Star Assessments, Accelerated Reader, Freckle, myON, Lalilo, Flocabulary, Nearpod, FastBridge, DnA, eduCLIMBER, eSchoolData, SchoolCity, Renaissance Growth Platform). It runs no public developer program: district integration is delivered through 1EdTech OneRoster 1.1 and LTI 1.3 / LTI Advantage certified connections and an Ed-Fi Assessment Outcomes API credential for DnA. This profile captures the machine-readable surface that IS public — three first-party OpenAPI contracts served anonymously but token-gated on Renaissance-controlled hosts (Student Proficiency Service, Student Pathway Event Proxy, Lexile API), a Renaissance-operated OAuth 2.0 / OpenID Connect authorization server at auth.renaissance.com, an llms.txt, a status page and a trust center.

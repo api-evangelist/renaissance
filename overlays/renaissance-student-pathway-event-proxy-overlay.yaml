@@ -1,0 +1,31 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Renaissance Student Pathway Event Proxy
+  version: 1.0.0
+extends: ../openapi/renaissance-student-pathway-event-proxy-openapi.yml
+x-generated: '2026-09-13'
+x-method: generated
+x-source: Derived from a probe of https://events.proficiency.renaissance.com/openapi.json
+actions:
+  - target: $.info
+    update:
+      contact:
+        name: Renaissance Learning, Inc.
+        url: https://www.renaissance.com/about-us/contact-renaissance/
+  - target: $
+    update:
+      servers:
+        - url: https://events.proficiency.renaissance.com
+          description: Production host the contract is served from; the original declares no servers[].
+  - target: $.components.securitySchemes.HTTPBearer
+    update:
+      bearerFormat: JWT
+      x-issuer: https://auth.renaissance.com
+  - target: $.paths['/freckle-events'].post
+    update:
+      x-idempotency: none
+      x-reversibility: none
+      x-api-evangelist-note: >-
+        The only genuine write in the Renaissance contract set. It answers 202 with no returned
+        identifier, declares no Idempotency-Key header and publishes no retraction path, so a client
+        retrying a timed-out post cannot tell whether the first event landed.
