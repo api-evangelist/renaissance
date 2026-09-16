@@ -1,0 +1,21 @@
+{
+  "repo": "renaissance",
+  "feeds": [
+    {
+      "source": "https://www.renaissance.com/resources/blog/",
+      "feed_url": "https://www.renaissance.com/resources/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://support.renaissance.com/s/",
+      "feed_url": "https://support.renaissance.com/s/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-13T13:00:00Z"
+}

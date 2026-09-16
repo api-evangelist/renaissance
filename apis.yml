@@ -31,7 +31,7 @@ tags:
   - Ed-Fi
   - Rostering
   - Interoperability
-  - Machine Learning
+  - Machine-Learning
 tags_raw:
   - education
   - edtech
@@ -46,84 +46,179 @@ tags_raw:
   - interoperability
   - machine-learning
 apis:
-  - name: Student Proficiency Service
-    description: >-
-      Renaissance-operated prediction service returning student proficiency on math skills and skill groups,
-      the next recommended pathway activity for a student, a student's current reading level, and class
-      roster lookups. OpenAPI 3.1.0 published at the service root; every scored operation requires an HTTP
-      bearer JWT. Student identifiers are Renaissance Growth Platform ids (student_rgp_id).
-    humanURL: https://proficiency.renaissance.com/docs
-    baseURL: https://proficiency.renaissance.com
-    tags:
-      - Education
-      - Assessment
-      - Learning Analytics
-      - Machine Learning
-      - Student Data
-    tags_raw:
-      - education
-      - assessment
-      - learning-analytics
-      - machine-learning
-      - student-data
-    properties:
-      - type: OpenAPI
-        url: openapi/renaissance-student-proficiency-service-openapi.yml
-      - type: APIReference
-        url: https://proficiency.renaissance.com/docs
-      - type: Overlay
-        url: overlays/renaissance-student-proficiency-service-overlay.yaml
-      - type: ErrorCatalog
-        url: errors/renaissance-problem-types.yml
-      - type: DataModel
-        url: data-model/renaissance-data-model.yml
-  - name: Student Pathway Event Proxy
-    description: >-
-      Event ingestion proxy that accepts Freckle practice events (assignment, activity and answer payloads)
-      into the Renaissance student pathway pipeline. OpenAPI 3.1.0 published at the service root; the single
-      POST /freckle-events operation is bearer-token gated and answers 202 on accept.
-    humanURL: https://events.proficiency.renaissance.com/docs
-    baseURL: https://events.proficiency.renaissance.com
-    tags:
-      - Education
-      - Student Data
-      - Learning Analytics
-    tags_raw:
-      - education
-      - student-data
-      - learning-analytics
-    properties:
-      - type: OpenAPI
-        url: openapi/renaissance-student-pathway-event-proxy-openapi.yml
-      - type: APIReference
-        url: https://events.proficiency.renaissance.com/docs
-      - type: Overlay
-        url: overlays/renaissance-student-pathway-event-proxy-overlay.yaml
-  - name: Lexile API
-    description: >-
-      Lexile measure lookup by ISBN-13, returning the stored Lexile book record. OpenAPI 3.0.1 published at
-      the API host root; the API gateway validates a JWT issued by Renaissance auth (client credentials) and
-      enforces the ren.lexile.read scope.
-    humanURL: https://api.proxile.renaissance.com/swagger
-    baseURL: https://api.proxile.renaissance.com
-    tags:
-      - Education
-      - Reading
-      - Student Data
-    tags_raw:
-      - education
-      - reading
-      - student-data
-    properties:
-      - type: OpenAPI
-        url: openapi/renaissance-lexile-api-openapi.yml
-      - type: APIReference
-        url: https://api.proxile.renaissance.com/swagger
-      - type: OAuthScopes
-        url: scopes/renaissance-scopes.yml
-      - type: Overlay
-        url: overlays/renaissance-lexile-api-overlay.yaml
+- name: Lexile API
+  description: >-
+    Lexile measure lookup by ISBN-13, returning the stored Lexile book record. OpenAPI 3.0.1 published
+    at the API host root; the API gateway validates a JWT issued by Renaissance auth (client credentials)
+    and enforces the ren.lexile.read scope.
+  humanURL: https://api.proxile.renaissance.com/swagger
+  baseURL: https://api.proxile.renaissance.com
+  tags:
+  - Education
+  - Reading
+  - Student Data
+  tags_raw:
+  - education
+  - reading
+  - student-data
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-lexile-api-openapi.yml
+  - type: APIReference
+    url: https://api.proxile.renaissance.com/swagger
+  - type: OAuthScopes
+    url: scopes/renaissance-scopes.yml
+  - type: Overlay
+    url: overlays/renaissance-lexile-api-overlay.yaml
+- aid: renaissance:renaissance-classes-api
+  name: Renaissance Classes API
+  description: The Classes API from Renaissance — 1 operation(s) for classes.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Classes
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-classes-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-events-api
+  name: Renaissance Events API
+  description: The Events API from Renaissance — 1 operation(s) for events.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-events-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-health-api
+  name: Renaissance Health API
+  description: The Health API from Renaissance — 1 operation(s) for health.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-health-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-pathway-api
+  name: Renaissance Pathway API
+  description: The Pathway API from Renaissance — 1 operation(s) for pathway.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Pathway
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-pathway-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-predictions-api
+  name: Renaissance Predictions API
+  description: The Predictions API from Renaissance — 3 operation(s) for predictions.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Predictions
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-predictions-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-reading-level-api
+  name: Renaissance Reading Level API
+  description: The Reading Level API from Renaissance — 1 operation(s) for reading level.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Reading Level
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-reading-level-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-skills-api
+  name: Renaissance Skills API
+  description: The Skills API from Renaissance — 1 operation(s) for skills.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Skills
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-skills-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
+- aid: renaissance:renaissance-utility-api
+  name: Renaissance Utility API
+  description: The Utility API from Renaissance — 2 operation(s) for utility.
+  humanURL: https://proficiency.renaissance.com/docs
+  baseURL: https://proficiency.renaissance.com
+  tags:
+  - Utility
+  properties:
+  - type: OpenAPI
+    url: openapi/renaissance-utility-api-openapi.yml
+  - type: APIReference
+    url: https://proficiency.renaissance.com/docs
+  - type: ErrorCatalog
+    url: errors/renaissance-problem-types.yml
+  - type: DataModel
+    url: data-model/renaissance-data-model.yml
+  - type: APIReference
+    url: https://events.proficiency.renaissance.com/docs
 common:
+  - type: Overlay
+    url: overlays/renaissance-student-proficiency-service-overlay.yaml
+  - type: Overlay
+    url: overlays/renaissance-student-pathway-event-proxy-overlay.yaml
   - type: TrustCenter
     url: security/renaissance-trust-center.yml
   - type: Website
