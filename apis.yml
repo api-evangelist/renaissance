@@ -94,6 +94,8 @@ apis:
   humanURL: https://proficiency.renaissance.com/docs
   baseURL: https://proficiency.renaissance.com
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
