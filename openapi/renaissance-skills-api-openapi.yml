@@ -1,0 +1,138 @@
+openapi: 3.2.0
+info:
+  title: Student Proficiency Service Skills API
+  description: '# Student Proficiency Service API
+
+
+    This service provides predictions for student proficiency in various math skills.'
+  version: 1.0.0
+tags:
+- name: Skills
+paths:
+  /v1/skills/validate:
+    post:
+      tags:
+      - Skills
+      summary: Validate skill IDs
+      description: 'Check which skill IDs are supported for proficiency predictions.
+
+
+        Returns a list of supported skill IDs and a dict mapping unsupported skill IDs and the reason.'
+      operationId: validate_skill_ids_v1_skills_validate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillValidationRequest'
+        required: true
+      responses:
+        '200':
+          description: Lists of supported and unsupported skill IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillValidationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SkillValidationRequest:
+      properties:
+        rl_skill_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Rl Skill Ids
+          description: List of Renaissance Learning skill IDs to validate
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+          - 72a3bfaa479de311b77c005056801da1
+      type: object
+      required:
+      - rl_skill_ids
+      title: SkillValidationRequest
+      description: Request model for skill validation endpoint.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SkillValidationResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: abc123def456
+        supported_skills:
+          items:
+            type: string
+          type: array
+          title: Supported Skills
+          description: List of supported skill IDs
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+        unsupported_skills:
+          additionalProperties:
+            type: string
+          type: object
+          title: Unsupported Skills
+          description: 'Map of skill ID to reason: ''invalid_format'', ''missing_usd'', or ''not_found'''
+          example:
+            72a3bfaa479de311b77c005056801da1: missing_usd
+            99a3bfaa479de311b77c005056801da1: not_found
+            not-a-uuid: invalid_format
+      type: object
+      required:
+      - request_id
+      - supported_skills
+      - unsupported_skills
+      title: SkillValidationResponse
+      description: Response model for skill validation endpoint
+      example:
+        request_id: abc123def456
+        supported_skills:
+        - fba2bfaa479de311b77c005056801da1
+        - 01a3bfaa479de311b77c005056801da1
+        unsupported_skills:
+          72a3bfaa479de311b77c005056801da1: missing_usd
+          99a3bfaa479de311b77c005056801da1: not_found
+          not-a-uuid: invalid_format
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

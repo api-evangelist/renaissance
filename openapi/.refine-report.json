@@ -1,0 +1,54 @@
+{
+  "provider": "renaissance",
+  "sources": [
+    "_original/renaissance-lexile-api-openapi.json",
+    "_original/renaissance-student-pathway-event-proxy-openapi.json",
+    "_original/renaissance-student-proficiency-service-openapi.json"
+  ],
+  "outputs": [
+    "renaissance-lexile-api-openapi.yml",
+    "renaissance-events-api-openapi.yml",
+    "renaissance-health-api-openapi.yml",
+    "renaissance-classes-api-openapi.yml",
+    "renaissance-pathway-api-openapi.yml",
+    "renaissance-predictions-api-openapi.yml",
+    "renaissance-reading-level-api-openapi.yml",
+    "renaissance-skills-api-openapi.yml",
+    "renaissance-utility-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "2 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (3 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "renaissance-lexile-api-openapi.json: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "renaissance-lexile-api-openapi.json: tagged paths GET /api/lexile/{isbn13} -> Lexile",
+    "renaissance-lexile-api-openapi.json: declared missing tag: Lexile",
+    "renaissance-student-pathway-event-proxy-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "renaissance-student-pathway-event-proxy-openapi.json: tagged paths GET /health -> Health",
+    "renaissance-student-pathway-event-proxy-openapi.json: declared missing tag: Events",
+    "renaissance-student-pathway-event-proxy-openapi.json: declared missing tag: Health",
+    "renaissance-student-proficiency-service-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "renaissance-student-proficiency-service-openapi.json: declared missing tag: Classes",
+    "renaissance-student-proficiency-service-openapi.json: declared missing tag: Pathway",
+    "renaissance-student-proficiency-service-openapi.json: declared missing tag: Predictions",
+    "renaissance-student-proficiency-service-openapi.json: declared missing tag: Reading Level",
+    "renaissance-student-proficiency-service-openapi.json: declared missing tag: Skills",
+    "renaissance-student-proficiency-service-openapi.json: declared missing tag: Utility",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/renaissance-student-proficiency-service-openapi.yml: archived document superseded by a larger archived document",
+    "_original/renaissance-student-pathway-event-proxy-openapi.yml: archived document superseded by a larger archived document",
+    "renaissance-classes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-lexile-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-pathway-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-predictions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-reading-level-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-skills-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "renaissance-utility-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

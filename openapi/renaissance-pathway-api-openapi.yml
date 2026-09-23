@@ -1,0 +1,251 @@
+openapi: 3.2.0
+info:
+  title: Student Proficiency Service Pathway API
+  description: '# Student Proficiency Service API
+
+
+    This service provides predictions for student proficiency in various math skills.'
+  version: 1.0.0
+tags:
+- name: Pathway
+paths:
+  /v1/pathway/next-activity/{student_rgp_id}:
+    get:
+      tags:
+      - Pathway
+      summary: Get the next recommended activity for a student
+      description: 'Returns the next activity that we recommend a student should complete with a deeplink to launch into the activity.
+
+
+        When no activity can be recommended the endpoint returns a `404` with a structured error body
+
+        (`detail.code`, `detail.message`, `detail.request_id`). Possible `code` values:
+
+
+        - `invalid_assessment_score`: The student is blocked from the pathway due to an invalid or insufficient assessment score.
+
+        - `cold_start_disabled`: The student requires a Cold Start placement test, but Cold Start routing is not enabled for this client.
+
+        - `invalid_grade`: The student''s grade could not be mapped to a placement test.
+
+        - `no_skills_available`: No skills are currently available to practice for this student.'
+      operationId: get_next_activity_v1_pathway_next_activity__student_rgp_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: student_rgp_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: RGP student identifier
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+          title: Student Rgp Id
+        description: RGP student identifier
+      - name: contentArea
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Content area for the recommendation (e.g., 'math', 'ela')
+          example: math
+          title: Contentarea
+        description: Content area for the recommendation (e.g., 'math', 'ela')
+      - name: grade
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/Grade'
+          description: Student's grade level. Used to prioritize on-grade-level skills.
+          example: '3'
+        description: Student's grade level. Used to prioritize on-grade-level skills.
+      responses:
+        '200':
+          description: The recommended next activity for the student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NextActivityResponse'
+        '404':
+          description: 'No next activity could be determined for the student. The `detail.code` field identifies the specific reason: `invalid_assessment_score`, `cold_start_disabled`, `invalid_grade`, or `no_skills_available`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NextActivityErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NextActivityError:
+      properties:
+        code:
+          $ref: '#/components/schemas/NextActivityErrorCode'
+          description: Machine-readable code identifying why no activity was found
+          example: no_skills_available
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation of why no activity was found
+          example: No skills are currently available to practice for this student.
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request, for log correlation
+          example: abc123def456
+      type: object
+      required:
+      - code
+      - message
+      - request_id
+      title: NextActivityError
+      description: Structured error body returned when no next activity can be determined.
+    AppCode:
+      type: string
+      enum:
+      - APPS_FR
+      - APPS_LALILO
+      - QUIZ_ENGINE
+      title: AppCode
+      description: Application codes for activity launches.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    NextActivityErrorResponse:
+      properties:
+        detail:
+          $ref: '#/components/schemas/NextActivityError'
+      type: object
+      required:
+      - detail
+      title: NextActivityErrorResponse
+      description: 404 response envelope for the next-activity endpoint.
+      example:
+        detail:
+          code: no_skills_available
+          message: No skills are currently available to practice for this student.
+          request_id: abc123def456
+    NextActivityResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: abc123def456
+        title:
+          type: string
+          title: Title
+          description: Display title for the activity
+          example: Counting by 10s
+        description:
+          type: string
+          title: Description
+          description: Description text for the activity
+          example: Practice counting by 10s to build number sense.
+        activity:
+          $ref: '#/components/schemas/ActivityLaunch'
+          description: Activity launch details including app code and deep link
+      type: object
+      required:
+      - request_id
+      - title
+      - description
+      - activity
+      title: NextActivityResponse
+      description: Response model for next-activity endpoint
+      example:
+        activity:
+          appCode: APPS_FR
+          deepLink:
+            activity: math_targeted
+            numQuestions: 5
+            skillId: abc123
+        description: Practice counting by 10s to build number sense.
+        request_id: abc123def456
+        title: Counting by 10s
+    ActivityLaunch:
+      properties:
+        appCode:
+          $ref: '#/components/schemas/AppCode'
+          description: Application code identifying which app to launch
+          example: APPS_FR
+        deepLink:
+          additionalProperties: true
+          type: object
+          title: Deeplink
+          description: Deep link parameters for the activity
+          example:
+            activity: math_targeted
+            numQuestions: 5
+            skillId: abc123
+      type: object
+      required:
+      - appCode
+      - deepLink
+      title: ActivityLaunch
+      description: Nested activity launch details containing app code and deep link.
+    NextActivityErrorCode:
+      type: string
+      enum:
+      - invalid_assessment_score
+      - cold_start_disabled
+      - invalid_grade
+      - no_skills_available
+      title: NextActivityErrorCode
+      description: Machine-readable reasons a next-activity recommendation could not be produced.
+    Grade:
+      type: string
+      enum:
+      - EE
+      - PK
+      - K
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - '>12'
+      - Other
+      - Unknown
+      title: Grade
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

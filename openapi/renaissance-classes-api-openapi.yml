@@ -1,0 +1,130 @@
+openapi: 3.2.0
+info:
+  title: Student Proficiency Service Classes API
+  description: '# Student Proficiency Service API
+
+
+    This service provides predictions for student proficiency in various math skills.'
+  version: 1.0.0
+tags:
+- name: Classes
+paths:
+  /v1/classes/{class_id}/students:
+    get:
+      tags:
+      - Classes
+      summary: Get students in a class
+      description: 'Retrieve the list of students enrolled in a specific class.
+
+
+        Returns student identifiers and names for all students the authenticated user
+
+        is authorized to view in the specified class.'
+      operationId: get_class_students_v1_classes__class_id__students_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: class_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Class Id
+      responses:
+        '200':
+          description: List of students in the class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassStudentsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ClassStudentsResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: abc123def456
+        class_id:
+          type: string
+          title: Class Id
+          description: Class identifier that was queried
+          example: 7424932e-cfae-4353-b2da-3408acb0fa88
+        students:
+          items:
+            $ref: '#/components/schemas/StudentInfo'
+          type: array
+          title: Students
+          description: List of students in the class
+      type: object
+      required:
+      - request_id
+      - class_id
+      - students
+      title: ClassStudentsResponse
+      description: Response model for class students endpoint
+    StudentInfo:
+      properties:
+        student_rgp_id:
+          type: string
+          title: Student Rgp Id
+          description: Student's Renaissance Growth Platform identifier
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        first_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Name
+          description: Student's first name
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Name
+          description: Student's last name
+      type: object
+      required:
+      - student_rgp_id
+      title: StudentInfo
+      description: Student information returned from class roster queries
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

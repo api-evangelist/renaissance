@@ -1,0 +1,91 @@
+openapi: 3.2.0
+info:
+  title: Student Proficiency Service Utility API
+  description: '# Student Proficiency Service API
+
+
+    This service provides predictions for student proficiency in various math skills.'
+  version: 1.0.0
+tags:
+- name: Utility
+paths:
+  /health:
+    get:
+      tags:
+      - Utility
+      summary: Health check
+      description: Returns the health status of the API
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Health status object
+          content:
+            application/json:
+              schema: {}
+  /launch:
+    post:
+      tags:
+      - Utility
+      summary: Launch endpoint
+      description: Accepts a JWT from LaunchControl, validates it, sets an auth cookie, and redirects to Skills Grid.
+      operationId: launch_launch_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_launch_launch_post'
+        required: true
+      responses:
+        '302':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Body_launch_launch_post:
+      properties:
+        jwt:
+          type: string
+          title: Jwt
+      type: object
+      required:
+      - jwt
+      title: Body_launch_launch_post
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

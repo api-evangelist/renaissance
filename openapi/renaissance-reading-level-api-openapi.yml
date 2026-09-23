@@ -1,0 +1,115 @@
+openapi: 3.2.0
+info:
+  title: Student Proficiency Service Reading Level API
+  description: '# Student Proficiency Service API
+
+
+    This service provides predictions for student proficiency in various math skills.'
+  version: 1.0.0
+tags:
+- name: Reading Level
+paths:
+  /reading-level/{student_id}:
+    get:
+      tags:
+      - Reading Level
+      summary: Get current reading level for a student
+      description: Returns the most recent reading level assessment for the specified student.
+      operationId: get_reading_level_endpoint_reading_level__student_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Student Id
+      responses:
+        '200':
+          description: Reading level with ZPD range, Lexile measure, and assessment timestamp
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingLevelResponse'
+        '404':
+          description: No reading level found for the given student
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ReadingLevelResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request
+          example: a1b2c3d4e5f6
+        zpdMin:
+          type: string
+          title: Zpdmin
+          description: Minimum Zone of Proximal Development level
+          example: '3.5'
+        zpdMax:
+          type: string
+          title: Zpdmax
+          description: Maximum Zone of Proximal Development level
+          example: '5.0'
+        lexile:
+          type: string
+          pattern: ^-?\d+L$
+          title: Lexile
+          description: Lexile measure
+          example: 740L
+        asOf:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Asof
+          description: ISO 8601 timestamp of when the latest assessment was taken. Null when grade-level fallback is used and no assessment exists.
+          example: '2025-01-20T10:30:00Z'
+      type: object
+      required:
+      - request_id
+      - zpdMin
+      - zpdMax
+      - lexile
+      title: ReadingLevelResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

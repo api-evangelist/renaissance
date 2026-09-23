@@ -1,0 +1,24 @@
+openapi: 3.2.0
+info:
+  title: Student Pathway Event Proxy Health API
+  version: 1.0.0
+tags:
+- name: Health
+paths:
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Health
+components:
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
