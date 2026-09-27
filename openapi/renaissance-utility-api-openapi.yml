@@ -46,6 +46,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    Body_launch_launch_post:
+      properties:
+        jwt:
+          type: string
+          title: Jwt
+      type: object
+      required:
+      - jwt
+      title: Body_launch_launch_post
     ValidationError:
       properties:
         loc:
@@ -76,15 +85,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    Body_launch_launch_post:
-      properties:
-        jwt:
-          type: string
-          title: Jwt
-      type: object
-      required:
-      - jwt
-      title: Body_launch_launch_post
   securitySchemes:
     HTTPBearer:
       type: http

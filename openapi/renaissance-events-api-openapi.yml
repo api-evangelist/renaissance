@@ -33,15 +33,6 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -68,24 +59,6 @@ components:
       - msg
       - type
       title: ValidationError
-    FreckleProduct:
-      type: string
-      enum:
-      - math_adaptive
-      - math_targeted
-      - focus_skills_practice
-      - math_assessments
-      - math_ren_intel_pathway
-      - ela_adaptive_skills_practice
-      - ela_targeted_skills_practice
-      - ela_focus_skills_practice
-      - ela_word_study
-      - ela_articles_reading
-      - science_articles_reading
-      - social_studies_articles_reading
-      - ela_ren_intel_pathway
-      title: FreckleProduct
-      description: Enum of all the strings that can appear in the products field
     FreckleEventMetadata:
       properties:
         sessionId:
@@ -219,6 +192,33 @@ components:
       - metadata
       - studentRgpId
       title: FreckleEvent
+    FreckleProduct:
+      type: string
+      enum:
+      - math_adaptive
+      - math_targeted
+      - focus_skills_practice
+      - math_assessments
+      - math_ren_intel_pathway
+      - ela_adaptive_skills_practice
+      - ela_targeted_skills_practice
+      - ela_focus_skills_practice
+      - ela_word_study
+      - ela_articles_reading
+      - science_articles_reading
+      - social_studies_articles_reading
+      - ela_ren_intel_pathway
+      title: FreckleProduct
+      description: Enum of all the strings that can appear in the products field
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     AnswerValue:
       properties:
         tag:
