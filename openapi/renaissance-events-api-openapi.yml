@@ -33,6 +33,57 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
+    FreckleEvent:
+      properties:
+        answerToken:
+          type: string
+          title: Answertoken
+        studentId:
+          type: integer
+          title: Studentid
+        questionId:
+          type: string
+          title: Questionid
+        rlSkillId:
+          type: string
+          title: Rlskillid
+        product:
+          $ref: '#/components/schemas/FreckleProduct'
+        correctness:
+          type: integer
+          maximum: 100.0
+          minimum: 0.0
+          title: Correctness
+        occurredAt:
+          type: string
+          format: date-time
+          title: Occurredat
+        version:
+          type: string
+          title: Version
+        metadata:
+          $ref: '#/components/schemas/FreckleEventMetadata'
+        skillRslId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Skillrslid
+        studentRgpId:
+          type: string
+          title: Studentrgpid
+      type: object
+      required:
+      - answerToken
+      - studentId
+      - questionId
+      - rlSkillId
+      - product
+      - correctness
+      - occurredAt
+      - version
+      - metadata
+      - studentRgpId
+      title: FreckleEvent
     ValidationError:
       properties:
         loc:
@@ -59,6 +110,40 @@ components:
       - msg
       - type
       title: ValidationError
+    AnswerValue:
+      properties:
+        tag:
+          type: string
+          title: Tag
+          description: Answer format (e.g. multiple_choice, singular_or, bucket)
+        value:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value
+          description: The student's selected answer
+      type: object
+      required:
+      - tag
+      title: AnswerValue
+    FreckleProduct:
+      type: string
+      enum:
+      - math_adaptive
+      - math_targeted
+      - focus_skills_practice
+      - math_assessments
+      - math_ren_intel_pathway
+      - ela_adaptive_skills_practice
+      - ela_targeted_skills_practice
+      - ela_focus_skills_practice
+      - ela_word_study
+      - ela_articles_reading
+      - science_articles_reading
+      - social_studies_articles_reading
+      - ela_ren_intel_pathway
+      title: FreckleProduct
+      description: Enum of all the strings that can appear in the products field
     FreckleEventMetadata:
       properties:
         sessionId:
@@ -141,75 +226,6 @@ components:
       - sessionId
       - durationSeconds
       title: FreckleEventMetadata
-    FreckleEvent:
-      properties:
-        answerToken:
-          type: string
-          title: Answertoken
-        studentId:
-          type: integer
-          title: Studentid
-        questionId:
-          type: string
-          title: Questionid
-        rlSkillId:
-          type: string
-          title: Rlskillid
-        product:
-          $ref: '#/components/schemas/FreckleProduct'
-        correctness:
-          type: integer
-          maximum: 100.0
-          minimum: 0.0
-          title: Correctness
-        occurredAt:
-          type: string
-          format: date-time
-          title: Occurredat
-        version:
-          type: string
-          title: Version
-        metadata:
-          $ref: '#/components/schemas/FreckleEventMetadata'
-        skillRslId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Skillrslid
-        studentRgpId:
-          type: string
-          title: Studentrgpid
-      type: object
-      required:
-      - answerToken
-      - studentId
-      - questionId
-      - rlSkillId
-      - product
-      - correctness
-      - occurredAt
-      - version
-      - metadata
-      - studentRgpId
-      title: FreckleEvent
-    FreckleProduct:
-      type: string
-      enum:
-      - math_adaptive
-      - math_targeted
-      - focus_skills_practice
-      - math_assessments
-      - math_ren_intel_pathway
-      - ela_adaptive_skills_practice
-      - ela_targeted_skills_practice
-      - ela_focus_skills_practice
-      - ela_word_study
-      - ela_articles_reading
-      - science_articles_reading
-      - social_studies_articles_reading
-      - ela_ren_intel_pathway
-      title: FreckleProduct
-      description: Enum of all the strings that can appear in the products field
     HTTPValidationError:
       properties:
         detail:
@@ -219,22 +235,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    AnswerValue:
-      properties:
-        tag:
-          type: string
-          title: Tag
-          description: Answer format (e.g. multiple_choice, singular_or, bucket)
-        value:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Value
-          description: The student's selected answer
-      type: object
-      required:
-      - tag
-      title: AnswerValue
   securitySchemes:
     HTTPBearer:
       type: http

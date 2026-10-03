@@ -84,6 +84,24 @@ components:
           72a3bfaa479de311b77c005056801da1: missing_usd
           99a3bfaa479de311b77c005056801da1: not_found
           not-a-uuid: invalid_format
+    SkillValidationRequest:
+      properties:
+        rl_skill_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Rl Skill Ids
+          description: List of Renaissance Learning skill IDs to validate
+          example:
+          - fba2bfaa479de311b77c005056801da1
+          - 01a3bfaa479de311b77c005056801da1
+          - 72a3bfaa479de311b77c005056801da1
+      type: object
+      required:
+      - rl_skill_ids
+      title: SkillValidationRequest
+      description: Request model for skill validation endpoint.
     ValidationError:
       properties:
         loc:
@@ -114,24 +132,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    SkillValidationRequest:
-      properties:
-        rl_skill_ids:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Rl Skill Ids
-          description: List of Renaissance Learning skill IDs to validate
-          example:
-          - fba2bfaa479de311b77c005056801da1
-          - 01a3bfaa479de311b77c005056801da1
-          - 72a3bfaa479de311b77c005056801da1
-      type: object
-      required:
-      - rl_skill_ids
-      title: SkillValidationRequest
-      description: Request model for skill validation endpoint.
   securitySchemes:
     HTTPBearer:
       type: http
