@@ -45,6 +45,60 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    StudentInfo:
+      properties:
+        student_rgp_id:
+          type: string
+          title: Student Rgp Id
+          description: Student's Renaissance Growth Platform identifier
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        first_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Name
+          description: Student's first name
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Name
+          description: Student's last name
+      type: object
+      required:
+      - student_rgp_id
+      title: StudentInfo
+      description: Student information returned from class roster queries
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ClassStudentsResponse:
       properties:
         request_id:
@@ -70,60 +124,6 @@ components:
       - students
       title: ClassStudentsResponse
       description: Response model for class students endpoint
-    StudentInfo:
-      properties:
-        student_rgp_id:
-          type: string
-          title: Student Rgp Id
-          description: Student's Renaissance Growth Platform identifier
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        first_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: First Name
-          description: Student's first name
-        last_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Name
-          description: Student's last name
-      type: object
-      required:
-      - student_rgp_id
-      title: StudentInfo
-      description: Student information returned from class roster queries
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     HTTPBearer:
       type: http

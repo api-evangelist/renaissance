@@ -33,57 +33,6 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    FreckleEvent:
-      properties:
-        answerToken:
-          type: string
-          title: Answertoken
-        studentId:
-          type: integer
-          title: Studentid
-        questionId:
-          type: string
-          title: Questionid
-        rlSkillId:
-          type: string
-          title: Rlskillid
-        product:
-          $ref: '#/components/schemas/FreckleProduct'
-        correctness:
-          type: integer
-          maximum: 100.0
-          minimum: 0.0
-          title: Correctness
-        occurredAt:
-          type: string
-          format: date-time
-          title: Occurredat
-        version:
-          type: string
-          title: Version
-        metadata:
-          $ref: '#/components/schemas/FreckleEventMetadata'
-        skillRslId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Skillrslid
-        studentRgpId:
-          type: string
-          title: Studentrgpid
-      type: object
-      required:
-      - answerToken
-      - studentId
-      - questionId
-      - rlSkillId
-      - product
-      - correctness
-      - occurredAt
-      - version
-      - metadata
-      - studentRgpId
-      title: FreckleEvent
     ValidationError:
       properties:
         loc:
@@ -144,6 +93,66 @@ components:
       - ela_ren_intel_pathway
       title: FreckleProduct
       description: Enum of all the strings that can appear in the products field
+    FreckleEvent:
+      properties:
+        answerToken:
+          type: string
+          title: Answertoken
+        studentId:
+          type: integer
+          title: Studentid
+        questionId:
+          type: string
+          title: Questionid
+        rlSkillId:
+          type: string
+          title: Rlskillid
+        product:
+          $ref: '#/components/schemas/FreckleProduct'
+        correctness:
+          type: integer
+          maximum: 100.0
+          minimum: 0.0
+          title: Correctness
+        occurredAt:
+          type: string
+          format: date-time
+          title: Occurredat
+        version:
+          type: string
+          title: Version
+        metadata:
+          $ref: '#/components/schemas/FreckleEventMetadata'
+        skillRslId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Skillrslid
+        studentRgpId:
+          type: string
+          title: Studentrgpid
+      type: object
+      required:
+      - answerToken
+      - studentId
+      - questionId
+      - rlSkillId
+      - product
+      - correctness
+      - occurredAt
+      - version
+      - metadata
+      - studentRgpId
+      title: FreckleEvent
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     FreckleEventMetadata:
       properties:
         sessionId:
@@ -226,15 +235,6 @@ components:
       - sessionId
       - durationSeconds
       title: FreckleEventMetadata
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     HTTPBearer:
       type: http

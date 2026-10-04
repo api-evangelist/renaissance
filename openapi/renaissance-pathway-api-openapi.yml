@@ -80,29 +80,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    NextActivityError:
-      properties:
-        code:
-          $ref: '#/components/schemas/NextActivityErrorCode'
-          description: Machine-readable code identifying why no activity was found
-          example: no_skills_available
-        message:
-          type: string
-          title: Message
-          description: Human-readable explanation of why no activity was found
-          example: No skills are currently available to practice for this student.
-        request_id:
-          type: string
-          title: Request Id
-          description: Unique identifier for this request, for log correlation
-          example: abc123def456
-      type: object
-      required:
-      - code
-      - message
-      - request_id
-      title: NextActivityError
-      description: Structured error body returned when no next activity can be determined.
     ValidationError:
       properties:
         loc:
@@ -124,59 +101,6 @@ components:
       - msg
       - type
       title: ValidationError
-    NextActivityErrorResponse:
-      properties:
-        detail:
-          $ref: '#/components/schemas/NextActivityError'
-      type: object
-      required:
-      - detail
-      title: NextActivityErrorResponse
-      description: 404 response envelope for the next-activity endpoint.
-      example:
-        detail:
-          code: no_skills_available
-          message: No skills are currently available to practice for this student.
-          request_id: abc123def456
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AppCode:
-      type: string
-      enum:
-      - APPS_FR
-      - APPS_LALILO
-      - QUIZ_ENGINE
-      title: AppCode
-      description: Application codes for activity launches.
-    Grade:
-      type: string
-      enum:
-      - EE
-      - PK
-      - K
-      - '1'
-      - '2'
-      - '3'
-      - '4'
-      - '5'
-      - '6'
-      - '7'
-      - '8'
-      - '9'
-      - '10'
-      - '11'
-      - '12'
-      - '>12'
-      - Other
-      - Unknown
-      title: Grade
     NextActivityResponse:
       properties:
         request_id:
@@ -215,15 +139,43 @@ components:
         description: Practice counting by 10s to build number sense.
         request_id: abc123def456
         title: Counting by 10s
-    NextActivityErrorCode:
-      type: string
-      enum:
-      - invalid_assessment_score
-      - cold_start_disabled
-      - invalid_grade
-      - no_skills_available
-      title: NextActivityErrorCode
-      description: Machine-readable reasons a next-activity recommendation could not be produced.
+    NextActivityErrorResponse:
+      properties:
+        detail:
+          $ref: '#/components/schemas/NextActivityError'
+      type: object
+      required:
+      - detail
+      title: NextActivityErrorResponse
+      description: 404 response envelope for the next-activity endpoint.
+      example:
+        detail:
+          code: no_skills_available
+          message: No skills are currently available to practice for this student.
+          request_id: abc123def456
+    NextActivityError:
+      properties:
+        code:
+          $ref: '#/components/schemas/NextActivityErrorCode'
+          description: Machine-readable code identifying why no activity was found
+          example: no_skills_available
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation of why no activity was found
+          example: No skills are currently available to practice for this student.
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request, for log correlation
+          example: abc123def456
+      type: object
+      required:
+      - code
+      - message
+      - request_id
+      title: NextActivityError
+      description: Structured error body returned when no next activity can be determined.
     ActivityLaunch:
       properties:
         appCode:
@@ -245,6 +197,54 @@ components:
       - deepLink
       title: ActivityLaunch
       description: Nested activity launch details containing app code and deep link.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NextActivityErrorCode:
+      type: string
+      enum:
+      - invalid_assessment_score
+      - cold_start_disabled
+      - invalid_grade
+      - no_skills_available
+      title: NextActivityErrorCode
+      description: Machine-readable reasons a next-activity recommendation could not be produced.
+    Grade:
+      type: string
+      enum:
+      - EE
+      - PK
+      - K
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - '>12'
+      - Other
+      - Unknown
+      title: Grade
+    AppCode:
+      type: string
+      enum:
+      - APPS_FR
+      - APPS_LALILO
+      - QUIZ_ENGINE
+      title: AppCode
+      description: Application codes for activity launches.
   securitySchemes:
     HTTPBearer:
       type: http
