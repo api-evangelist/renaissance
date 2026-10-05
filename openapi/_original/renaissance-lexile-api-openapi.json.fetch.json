@@ -1,0 +1,12 @@
+{
+ "url": "https://api.proxile.renaissance.com/openapi.json",
+ "requested_url": "https://api.proxile.renaissance.com/openapi.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 1516,
+ "sha256": "4dea4e8c7a4b8c7e5be7a63fc1525fcf90a1576d18702e02b6dc3a8f691a2fd6",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
