@@ -1,0 +1,174 @@
+edges:
+- partner_name: 1EdTech
+  partner: null
+  type: contract
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://site.imsglobal.org/certifications
+  category: 1EdTech certified products
+  contract_reference:
+    register: 1EdTech certified product directory (TrustEd Apps)
+    spec_file: null
+    standard: 1EdTech
+    role: Affiliate Member
+    registered_name: Renaissance Learning
+    matched_domain: renaissance.com
+    matched_by: domain
+    standards:
+    - LTI Advantage
+    - Learning Tools Interoperability (LTI) v1.3
+    - OneRoster 1.1
+    certified_products:
+    - product: DnA
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/dna/v10
+    - product: Fastbridge by Renaissance
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/fastbridge-by-renaissance/v10
+    - product: Freckle Education
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/freckle-education/v10
+    - product: Lalilo by Renaissance
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/lalilo-by-renaissance/v10
+    - product: myON
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/myon/v10
+    - product: Renaissance Accelerated Reader®
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-accelerated-readerr/v10
+    - product: Renaissance Star CBM Lectura
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-star-cbm-lectura/v10
+    - product: Renaissance Star CBM Math
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-star-cbm-math/v10
+    - product: Renaissance Star CBM Reading
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-star-cbm-reading/v10
+    - product: Renaissance Star Early Literacy®
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-star-early-literacyr/v10
+    - product: Renaissance Star Math®
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-star-mathr/v10
+    - product: Renaissance Star Reading®
+      version: v1.0
+      standards:
+      - OneRoster 1.1
+      implementation:
+      - 'Rostering: CSV Rostering Import Bulk'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-star-readingr/v10
+    - product: SchoolCity
+      version: v1
+      standards:
+      - LTI Advantage
+      - Learning Tools Interoperability (LTI) v1.3
+      implementation:
+      - 'Extension: LTI Assignment & Grade Services 2.0'
+      - 'Extension: LTI Deep Linking 2.0'
+      - 'Type: Tool'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/schoolcity/v1
+    detected_by: sweep-edtech.py
+    detected: '2026-10-14'
+generated: '2026-10-14'
+method: searched
+checked:
+- https://site.imsglobal.org/certifications
