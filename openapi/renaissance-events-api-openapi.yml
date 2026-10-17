@@ -33,66 +33,6 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AnswerValue:
-      properties:
-        tag:
-          type: string
-          title: Tag
-          description: Answer format (e.g. multiple_choice, singular_or, bucket)
-        value:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Value
-          description: The student's selected answer
-      type: object
-      required:
-      - tag
-      title: AnswerValue
-    FreckleProduct:
-      type: string
-      enum:
-      - math_adaptive
-      - math_targeted
-      - focus_skills_practice
-      - math_assessments
-      - math_ren_intel_pathway
-      - ela_adaptive_skills_practice
-      - ela_targeted_skills_practice
-      - ela_focus_skills_practice
-      - ela_word_study
-      - ela_articles_reading
-      - science_articles_reading
-      - social_studies_articles_reading
-      - ela_ren_intel_pathway
-      title: FreckleProduct
-      description: Enum of all the strings that can appear in the products field
     FreckleEvent:
       properties:
         answerToken:
@@ -144,15 +84,6 @@ components:
       - metadata
       - studentRgpId
       title: FreckleEvent
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     FreckleEventMetadata:
       properties:
         sessionId:
@@ -235,6 +166,75 @@ components:
       - sessionId
       - durationSeconds
       title: FreckleEventMetadata
+    AnswerValue:
+      properties:
+        tag:
+          type: string
+          title: Tag
+          description: Answer format (e.g. multiple_choice, singular_or, bucket)
+        value:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value
+          description: The student's selected answer
+      type: object
+      required:
+      - tag
+      title: AnswerValue
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FreckleProduct:
+      type: string
+      enum:
+      - math_adaptive
+      - math_targeted
+      - focus_skills_practice
+      - math_assessments
+      - math_ren_intel_pathway
+      - ela_adaptive_skills_practice
+      - ela_targeted_skills_practice
+      - ela_focus_skills_practice
+      - ela_word_study
+      - ela_articles_reading
+      - science_articles_reading
+      - social_studies_articles_reading
+      - ela_ren_intel_pathway
+      title: FreckleProduct
+      description: Enum of all the strings that can appear in the products field
   securitySchemes:
     HTTPBearer:
       type: http

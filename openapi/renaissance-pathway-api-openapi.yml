@@ -80,27 +80,28 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+    Grade:
+      type: string
+      enum:
+      - EE
+      - PK
+      - K
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - '>12'
+      - Other
+      - Unknown
+      title: Grade
     NextActivityResponse:
       properties:
         request_id:
@@ -139,20 +140,35 @@ components:
         description: Practice counting by 10s to build number sense.
         request_id: abc123def456
         title: Counting by 10s
-    NextActivityErrorResponse:
+    AppCode:
+      type: string
+      enum:
+      - APPS_FR
+      - APPS_LALILO
+      - QUIZ_ENGINE
+      title: AppCode
+      description: Application codes for activity launches.
+    ActivityLaunch:
       properties:
-        detail:
-          $ref: '#/components/schemas/NextActivityError'
+        appCode:
+          $ref: '#/components/schemas/AppCode'
+          description: Application code identifying which app to launch
+          example: APPS_FR
+        deepLink:
+          additionalProperties: true
+          type: object
+          title: Deeplink
+          description: Deep link parameters for the activity
+          example:
+            activity: math_targeted
+            numQuestions: 5
+            skillId: abc123
       type: object
       required:
-      - detail
-      title: NextActivityErrorResponse
-      description: 404 response envelope for the next-activity endpoint.
-      example:
-        detail:
-          code: no_skills_available
-          message: No skills are currently available to practice for this student.
-          request_id: abc123def456
+      - appCode
+      - deepLink
+      title: ActivityLaunch
+      description: Nested activity launch details containing app code and deep link.
     NextActivityError:
       properties:
         code:
@@ -176,27 +192,6 @@ components:
       - request_id
       title: NextActivityError
       description: Structured error body returned when no next activity can be determined.
-    ActivityLaunch:
-      properties:
-        appCode:
-          $ref: '#/components/schemas/AppCode'
-          description: Application code identifying which app to launch
-          example: APPS_FR
-        deepLink:
-          additionalProperties: true
-          type: object
-          title: Deeplink
-          description: Deep link parameters for the activity
-          example:
-            activity: math_targeted
-            numQuestions: 5
-            skillId: abc123
-      type: object
-      required:
-      - appCode
-      - deepLink
-      title: ActivityLaunch
-      description: Nested activity launch details containing app code and deep link.
     HTTPValidationError:
       properties:
         detail:
@@ -206,6 +201,41 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    NextActivityErrorResponse:
+      properties:
+        detail:
+          $ref: '#/components/schemas/NextActivityError'
+      type: object
+      required:
+      - detail
+      title: NextActivityErrorResponse
+      description: 404 response envelope for the next-activity endpoint.
+      example:
+        detail:
+          code: no_skills_available
+          message: No skills are currently available to practice for this student.
+          request_id: abc123def456
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     NextActivityErrorCode:
       type: string
       enum:
@@ -215,36 +245,6 @@ components:
       - no_skills_available
       title: NextActivityErrorCode
       description: Machine-readable reasons a next-activity recommendation could not be produced.
-    Grade:
-      type: string
-      enum:
-      - EE
-      - PK
-      - K
-      - '1'
-      - '2'
-      - '3'
-      - '4'
-      - '5'
-      - '6'
-      - '7'
-      - '8'
-      - '9'
-      - '10'
-      - '11'
-      - '12'
-      - '>12'
-      - Other
-      - Unknown
-      title: Grade
-    AppCode:
-      type: string
-      enum:
-      - APPS_FR
-      - APPS_LALILO
-      - QUIZ_ENGINE
-      title: AppCode
-      description: Application codes for activity launches.
   securitySchemes:
     HTTPBearer:
       type: http

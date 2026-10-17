@@ -42,15 +42,27 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    HTTPValidationError:
+    ValidationError:
       properties:
-        detail:
+        loc:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Detail
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
-      title: HTTPValidationError
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     SkillValidationResponse:
       properties:
         request_id:
@@ -93,6 +105,15 @@ components:
           72a3bfaa479de311b77c005056801da1: missing_usd
           99a3bfaa479de311b77c005056801da1: not_found
           not-a-uuid: invalid_format
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     SkillValidationRequest:
       properties:
         rl_skill_ids:
@@ -111,27 +132,6 @@ components:
       - rl_skill_ids
       title: SkillValidationRequest
       description: Request model for skill validation endpoint.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http
