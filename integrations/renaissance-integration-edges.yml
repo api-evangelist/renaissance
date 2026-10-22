@@ -86,6 +86,19 @@ edges:
       - Vetted
       lapsed: false
       url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-accelerated-readerr/v10
+    - product: Renaissance LMS Integration
+      version: 1.0.0
+      standards:
+      - LTI Advantage
+      - Learning Tools Interoperability (LTI) v1.3
+      implementation:
+      - 'Extension: LTI Assignment & Grade Services 2.0'
+      - 'Extension: LTI Deep Linking 2.0'
+      - 'Type: Tool'
+      attributes:
+      - Certified Product
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/renaissance-learning/renaissance-lms-integration/100
     - product: Renaissance Star CBM Lectura
       version: v1.0
       standards:
@@ -167,7 +180,7 @@ edges:
       lapsed: false
       url: https://site.imsglobal.org/certifications/renaissance-learning/schoolcity/v1
     detected_by: sweep-edtech.py
-    detected: '2026-10-14'
+    detected: '2026-10-19'
 generated: '2026-10-14'
 method: searched
 checked:
