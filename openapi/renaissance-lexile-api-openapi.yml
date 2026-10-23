@@ -42,3 +42,9 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: 'JWT from Renaissance auth (client credentials). Token URL: https://auth.stage.renaissance.com/oauth2/token (non-prod) or https://auth.renaissance.com/oauth2/token (prod). Request scope ren.lexile.read, audience must match API URL.'
+x-provenance:
+  method: harvested
+  publisher: Renaissance
+  source: https://api.proxile.renaissance.com/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
