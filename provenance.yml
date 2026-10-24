@@ -24,7 +24,13 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
+  integrations/_index.yml:
+    method: generated
+    evidence: carries an API Evangelist house phrase
+  integrations/renaissance-integration-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-14T064754.yml:
@@ -93,6 +99,21 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/renaissance-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -104,24 +125,24 @@ artifacts:
     evidence: declared in the artifact
   openapi/_original/renaissance-lexile-api-openapi.json:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: byte-identical to https://api.proxile.renaissance.com/openapi.json (sha256 4dea4e8c7a4b,
+      fetched 2026-10-04)
   openapi/_original/renaissance-student-pathway-event-proxy-openapi.json:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: byte-identical to https://events.proficiency.renaissance.com/openapi.json (sha256 cd16a06cbf71,
+      fetched 2026-10-04)
   openapi/_original/renaissance-student-pathway-event-proxy-openapi.yml:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: the same operations as https://events.proficiency.renaissance.com/openapi.json (sha256 cd16a06cbf71,
+      fetched 2026-10-04)
   openapi/_original/renaissance-student-proficiency-service-openapi.json:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: byte-identical to https://proficiency.renaissance.com/openapi.json (sha256 23813ca7a829,
+      fetched 2026-10-04)
   openapi/_original/renaissance-student-proficiency-service-openapi.yml:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: the same operations as https://proficiency.renaissance.com/openapi.json (sha256 23813ca7a829,
+      fetched 2026-10-04)
   openapi/renaissance-classes-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
@@ -150,14 +171,14 @@ artifacts:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   overlays/renaissance-lexile-api-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   overlays/renaissance-student-pathway-event-proxy-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   overlays/renaissance-student-proficiency-service-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   packages/renaissance-packages.yml:
     method: searched
     evidence: declared in the artifact
